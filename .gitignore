@@ -1,0 +1,15 @@
+node_modules/
+.next/
+out/
+
+# Local runtime state written by `wrangler dev` (miniflare sqlite, cache, logs).
+.wrangler/
+
+.env*
+!.env.example
+*.tsbuildinfo
+next-env.d.ts
+.DS_Store
+
+# Original photographs (renditions in public/images are committed).
+photos/

@@ -1,0 +1,412 @@
+@import 'tailwindcss';
+
+/* ==========================================================================
+   CARMAG TRANSPORTS — design tokens
+   --------------------------------------------------------------------------
+   Palette: owner Phase 0 answers (2026-10-19) — navy #071B2E, red #D71920,
+   metallic gray #697580, white. The business card uses teal/copper instead;
+   that conflict is open (`logo-palette` in src/data/company.ts), so every
+   colour is a token here and a palette change is a one-file edit.
+   Every text/background pairing is audited by `npm run brand`.
+   ========================================================================== */
+
+@theme {
+  --color-navy: #071b2e;
+  --color-navy-surface: #0d2742;
+  --color-navy-raised: #13324f;
+  --color-navy-border: #23405e;
+
+  --color-red: #d71920;
+  --color-red-hover: #b5141a;
+  /* Red for small text on navy: brand red is only 3.36:1 there. */
+  --color-red-soft: #f0595e;
+
+  --color-steel: #697580;
+  --color-steel-light: #9daab7;
+  --color-steel-dark: #4f5b66;
+
+  --color-paper: #f4f2ee;
+  --color-paper-line: #d9d6cf;
+  --color-mist: #e4e9ee;
+
+  /* WhatsApp: darker than the official #25D366 so white text passes 4.5:1. */
+  --color-whatsapp: #1fa855;
+  --color-whatsapp-dark: #178644;
+  --color-whatsapp-darker: #11683a;
+
+  --font-sans: var(--font-montserrat), system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --ease-industrial: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* Semantic layer. Dark is the default; `.band-light` inverts it. */
+:root {
+  --bg: var(--color-navy);
+  --surface: var(--color-navy-surface);
+  --fg: var(--color-mist);
+  --fg-strong: #ffffff;
+  --fg-muted: var(--color-steel-light);
+  --accent: var(--color-red-soft);
+  --line: var(--color-navy-border);
+  --focus: #ffffff;
+  --error: #ff8c8c;
+
+  --section-y: clamp(3.5rem, 8vw, 7rem);
+  --shell-x: clamp(1.125rem, 4vw, 2.5rem);
+  --shell-max: 78rem;
+}
+
+.band-light {
+  --bg: var(--color-paper);
+  --surface: #ffffff;
+  --fg: var(--color-navy);
+  --fg-strong: var(--color-navy);
+  --fg-muted: var(--color-steel-dark);
+  --accent: var(--color-red);
+  --line: var(--color-paper-line);
+  --focus: var(--color-red);
+  --error: var(--color-red);
+}
+
+@layer base {
+  * {
+    min-width: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5.5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-navy);
+    color: var(--color-mist);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+    color: var(--fg-strong);
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background-color: var(--color-red);
+    color: #ffffff;
+  }
+
+  img,
+  picture,
+  svg {
+    display: block;
+    max-width: 100%;
+  }
+
+  img[width][height] {
+    height: auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* ==========================================================================
+   Components. Kept inside `@layer components` on purpose: unlayered CSS beats
+   Tailwind utilities, which once kept a `lg:hidden` menu button visible.
+   ========================================================================== */
+@layer components {
+  .shell {
+    width: 100%;
+    max-width: var(--shell-max);
+    margin-inline: auto;
+    padding-inline: var(--shell-x);
+  }
+
+  .section {
+    position: relative;
+    padding-block: var(--section-y);
+    background-color: var(--bg);
+    color: var(--fg);
+  }
+
+  /* --- Typography ------------------------------------------------------ */
+
+  /* The "TRANSPORTS" half of the lockup at UI scale: small, tracked caps. */
+  .overline {
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .display-hero {
+    font-size: clamp(2.125rem, 5vw, 3.75rem);
+    font-weight: 900;
+    line-height: 1.02;
+  }
+  .display-2 {
+    font-size: clamp(1.75rem, 4vw, 2.875rem);
+  }
+  .display-3 {
+    font-size: clamp(1.25rem, 2.2vw, 1.625rem);
+  }
+
+  .lede {
+    font-size: clamp(1.0625rem, 1.4vw, 1.1875rem);
+    line-height: 1.6;
+    color: var(--fg-muted);
+    max-width: 48ch;
+  }
+
+  .label-tech {
+    font-weight: 700;
+    font-size: 0.6875rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+  }
+
+  /* --- Brand motifs (from the logo's chevrons) ------------------------- */
+
+  /* Diagonal cut on two corners, the chevron's 45° edge. */
+  .cut-frame {
+    --cut: 1.5rem;
+    clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
+  }
+
+  /* Short red rule under a heading. */
+  .rule-red::after {
+    content: '';
+    display: block;
+    width: 3.5rem;
+    height: 3px;
+    margin-top: 1rem;
+    background-color: var(--color-red);
+  }
+
+  /* Ruled spec grid: 1px gaps over a line-coloured backdrop draw the rules. */
+  .spec-grid {
+    display: grid;
+    gap: 1px;
+    background-color: var(--line);
+    border: 1px solid var(--line);
+  }
+  .spec-grid > * {
+    background-color: var(--bg);
+  }
+
+  /* Heavy top-rule column. */
+  .top-rule {
+    border-top: 3px solid var(--fg-strong);
+    padding-top: 1.25rem;
+  }
+
+  /* --- Buttons --------------------------------------------------------- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 3rem;
+    padding: 0.75rem 1.375rem;
+    border: 2px solid transparent;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 0.875rem;
+    letter-spacing: 0.04em;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      background-color 0.2s var(--ease-industrial),
+      border-color 0.2s var(--ease-industrial),
+      color 0.2s var(--ease-industrial);
+  }
+  .btn-sm {
+    min-height: 2.75rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.8125rem;
+  }
+
+  .btn-primary {
+    background-color: var(--color-red);
+    color: #ffffff;
+  }
+  .btn-primary:hover {
+    background-color: var(--color-red-hover);
+  }
+
+  .btn-whatsapp {
+    background-color: var(--color-whatsapp-dark);
+    color: #ffffff;
+  }
+  .btn-whatsapp:hover {
+    background-color: var(--color-whatsapp-darker);
+  }
+
+  .btn-outline {
+    background-color: transparent;
+    border-color: var(--fg-strong);
+    color: var(--fg-strong);
+  }
+  .btn-outline:hover {
+    background-color: var(--fg-strong);
+    color: var(--bg);
+  }
+
+  .btn-ghost {
+    background-color: transparent;
+    border-color: var(--line);
+    color: var(--fg);
+  }
+  .btn-ghost:hover {
+    border-color: var(--fg-strong);
+  }
+
+  .text-link {
+    font-weight: 700;
+    color: var(--fg-strong);
+    text-decoration: underline;
+    text-decoration-color: var(--color-red);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.3em;
+  }
+  .text-link:hover {
+    text-decoration-color: currentColor;
+  }
+
+  /* --- Forms ----------------------------------------------------------- */
+  .field-label {
+    display: block;
+    margin-bottom: 0.375rem;
+    font-weight: 700;
+    font-size: 0.8125rem;
+    color: var(--fg);
+  }
+
+  /* The form sits on a light band. */
+  .field-input {
+    width: 100%;
+    min-height: 3rem;
+    padding: 0.6875rem 0.875rem;
+    font: inherit;
+    font-size: 1rem; /* 16px stops iOS zoom on focus */
+    color: var(--color-navy);
+    background-color: #ffffff;
+    border: 1px solid var(--color-steel);
+    border-radius: 4px;
+    appearance: none;
+  }
+  .field-input::placeholder {
+    color: var(--color-steel);
+  }
+  .field-input:focus {
+    outline: none;
+    border-color: var(--color-navy);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-navy) 22%, transparent);
+  }
+  .field-input[aria-invalid='true'] {
+    border-color: var(--error);
+    border-width: 2px;
+  }
+  select.field-input {
+    background-image:
+      linear-gradient(45deg, transparent 50%, var(--color-steel-dark) 50%),
+      linear-gradient(135deg, var(--color-steel-dark) 50%, transparent 50%);
+    background-position:
+      calc(100% - 18px) calc(50% - 2px),
+      calc(100% - 13px) calc(50% - 2px);
+    background-size: 5px 5px;
+    background-repeat: no-repeat;
+    padding-right: 2.5rem;
+  }
+  textarea.field-input {
+    min-height: 7rem;
+    resize: vertical;
+  }
+  .field-error {
+    margin-top: 0.3125rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--error);
+  }
+
+  /* --- Utilities ------------------------------------------------------- */
+  .skip-link {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    z-index: 100;
+    translate: -50% -120%;
+    padding: 0.75rem 1.25rem;
+    background-color: var(--color-red);
+    color: #ffffff;
+    font-weight: 700;
+  }
+  .skip-link:focus {
+    translate: -50% 0;
+  }
+
+  /* The only floating element. Navy ring keeps its edge visible on light bands. */
+  .whatsapp-float {
+    position: fixed;
+    z-index: 45;
+    right: calc(env(safe-area-inset-right, 0px) + 1rem);
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 1rem);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    border: 2px solid var(--color-navy);
+    border-radius: 9999px;
+    background-color: var(--color-whatsapp);
+    color: #ffffff;
+    box-shadow: 0 6px 20px rgb(0 0 0 / 35%);
+    transition:
+      opacity 0.2s var(--ease-industrial),
+      background-color 0.2s var(--ease-industrial);
+  }
+  .whatsapp-float:hover {
+    background-color: var(--color-whatsapp-dark);
+  }
+  .whatsapp-float[data-hidden='true'] {
+    opacity: 0;
+    pointer-events: none;
+  }
+  @media (min-width: 64rem) {
+    .whatsapp-float {
+      right: calc(env(safe-area-inset-right, 0px) + 1.75rem);
+      bottom: calc(env(safe-area-inset-bottom, 0px) + 1.75rem);
+    }
+  }
+}

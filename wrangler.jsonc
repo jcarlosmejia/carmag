@@ -1,0 +1,26 @@
+{
+  // CARMAG TRANSPORTS — static-assets-only Worker (no `main`: no script runs,
+  // so page views are not billable invocations).
+  // https://developers.cloudflare.com/workers/static-assets/routing/static-site-generation/
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "carmag",
+  "compatibility_date": "2026-10-19",
+
+  "assets": {
+    // `next build` (output: 'export') writes here.
+    "directory": "./out/",
+    // Serve out/404.html with a real 404 status for unknown paths.
+    "not_found_handling": "404-page",
+    // Pairs with `trailingSlash: true` in next.config.ts.
+    "html_handling": "auto-trailing-slash"
+  },
+
+  // Fallback hostname that works regardless of the zone's DNS state.
+  "workers_dev": true,
+
+  // DO NOT declare `routes` / `custom_domain` here. On the sister project that
+  // made an unattended Workers Builds deploy fail (it cannot confirm replacing
+  // existing DNS records) and caused a full outage (error 1042). Attach
+  // carmag.com.mx from the dashboard: Worker → Settings → Domains & Routes.
+  "observability": { "enabled": true }
+}

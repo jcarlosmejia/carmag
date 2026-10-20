@@ -1,0 +1,56 @@
+# Cloudflare custom headers for static assets.
+#
+# `output: 'export'` cannot emit HTTP headers (Next.js `headers()` is one of the
+# unsupported features in a static export), so they are declared here instead.
+# Workers reads this file from the root of the assets directory and does not
+# serve it; Next copies everything in `public/` into `out/`, so it lands in the
+# right place. The same file format works on Pages.
+#
+# Order matters: later, more specific rules win.
+
+/*
+  # Stop browsers from MIME-sniffing a response away from its declared type.
+  X-Content-Type-Options: nosniff
+  # Send the origin only on cross-origin requests; keeps paths out of referrers.
+  Referrer-Policy: strict-origin-when-cross-origin
+  # This site is never meant to be framed.
+  X-Frame-Options: DENY
+  # Nothing on this site uses these APIs; deny them explicitly.
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+  # Force HTTPS for a year on this host. No `includeSubDomains` and no
+  # `preload`: mail and webmail still live on NEUBOX subdomains whose HTTPS
+  # status is unverified. Revisit after the DNS migration (docs/lanzamiento.md).
+  Strict-Transport-Security: max-age=31536000
+  # No third-party embeds, so isolate the browsing context.
+  Cross-Origin-Opener-Policy: same-origin
+
+# Hashed build assets are immutable: the filename changes whenever the content
+# does, so they can be cached for a year. Without this they are served with
+# `max-age=0, must-revalidate` and every repeat visit re-validates. One splat
+# rule covers chunks, CSS and fonts — a splat matches greedily, across path
+# separators.
+#
+/_next/static/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Photography and brand derivatives are content-addressed by their slug and
+# width. They change only when the photo set is regenerated, so cache them for a
+# week at the browser and let Cloudflare hold them longer at the edge.
+/images/*
+  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
+
+/brand/*
+  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
+
+# HTML must always be re-checked so a redeploy is picked up immediately.
+/
+  Cache-Control: public, max-age=0, must-revalidate
+
+/caja-seca-53-pies/
+  Cache-Control: public, max-age=0, must-revalidate
+
+/plataforma-40-pies/
+  Cache-Control: public, max-age=0, must-revalidate
+
+/aviso-de-privacidad/
+  Cache-Control: public, max-age=0, must-revalidate

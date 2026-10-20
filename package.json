@@ -1,0 +1,44 @@
+{
+  "name": "carmag",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sitio de CARMAG TRANSPORTS — transporte de carga y fletes desde Guadalajara.",
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build --webpack && node scripts/prune-soft-404.mjs",
+    "start": "npx serve out -l 4320",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "images": "node scripts/build-images.mjs",
+    "brand": "node scripts/build-brand.mjs",
+    "map": "node scripts/build-map.mjs",
+    "docs": "node scripts/build-docs.mjs",
+    "check": "node scripts/check-site.mjs",
+    "test": "node --test src/lib/quote.test.ts",
+    "qa": "npm run lint && npm run typecheck && npm test && npm run brand -- --audit-only && npm run build && npm run check"
+  },
+  "dependencies": {
+    "next": "16.3.5",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "devDependencies": {
+    "@fontsource/montserrat": "^5.2.0",
+    "@tailwindcss/postcss": "4.3.3",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "eslint": "^9",
+    "eslint-config-next": "^16.3.5",
+    "opentype.js": "^1.3.4",
+    "postcss": "^8.5.6",
+    "sharp": "0.35.4",
+    "tailwindcss": "4.3.3",
+    "topojson-client": "^3.1.0",
+    "typescript": "^5.9.0",
+    "world-atlas": "^2.0.2"
+  }
+}
