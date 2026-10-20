@@ -70,28 +70,34 @@ export const slotImages: Partial<Record<ImageSlot, ImageAsset>> = {
     ]
   },
   "caja-seca": {
-    "slug": "carmag-caja-seca-53-pies-tractocamion",
-    "width": 804,
-    "height": 536,
-    "alt": "Tractocamión conectado a una caja seca blanca de 53 pies, estacionado en un patio junto a la carretera.",
+    "slug": "carmag-tractocamion-caja-cerrada-patio",
+    "width": 1350,
+    "height": 900,
+    "alt": "Tractocamión negro enganchado a una caja cerrada blanca, estacionado en un patio de tierra.",
     "renditions": [
       {
         "width": 480,
-        "avif": "/images/carmag-caja-seca-53-pies-tractocamion-480.avif",
-        "webp": "/images/carmag-caja-seca-53-pies-tractocamion-480.webp",
-        "jpg": "/images/carmag-caja-seca-53-pies-tractocamion-480.jpg"
+        "avif": "/images/carmag-tractocamion-caja-cerrada-patio-480.avif",
+        "webp": "/images/carmag-tractocamion-caja-cerrada-patio-480.webp",
+        "jpg": "/images/carmag-tractocamion-caja-cerrada-patio-480.jpg"
       },
       {
         "width": 768,
-        "avif": "/images/carmag-caja-seca-53-pies-tractocamion-768.avif",
-        "webp": "/images/carmag-caja-seca-53-pies-tractocamion-768.webp",
-        "jpg": "/images/carmag-caja-seca-53-pies-tractocamion-768.jpg"
+        "avif": "/images/carmag-tractocamion-caja-cerrada-patio-768.avif",
+        "webp": "/images/carmag-tractocamion-caja-cerrada-patio-768.webp",
+        "jpg": "/images/carmag-tractocamion-caja-cerrada-patio-768.jpg"
       },
       {
-        "width": 804,
-        "avif": "/images/carmag-caja-seca-53-pies-tractocamion-804.avif",
-        "webp": "/images/carmag-caja-seca-53-pies-tractocamion-804.webp",
-        "jpg": "/images/carmag-caja-seca-53-pies-tractocamion-804.jpg"
+        "width": 1080,
+        "avif": "/images/carmag-tractocamion-caja-cerrada-patio-1080.avif",
+        "webp": "/images/carmag-tractocamion-caja-cerrada-patio-1080.webp",
+        "jpg": "/images/carmag-tractocamion-caja-cerrada-patio-1080.jpg"
+      },
+      {
+        "width": 1350,
+        "avif": "/images/carmag-tractocamion-caja-cerrada-patio-1350.avif",
+        "webp": "/images/carmag-tractocamion-caja-cerrada-patio-1350.webp",
+        "jpg": "/images/carmag-tractocamion-caja-cerrada-patio-1350.jpg"
       }
     ]
   },
@@ -120,12 +126,16 @@ export const slotImages: Partial<Record<ImageSlot, ImageAsset>> = {
         "jpg": "/images/carmag-plataforma-estructuras-acero-897.jpg"
       }
     ]
-  },
-  "operacion": {
+  }
+};
+
+export const galleryImages: readonly ImageAsset[] = [
+  {
     "slug": "carmag-plataformas-carretera",
     "width": 729,
     "height": 486,
     "alt": "Dos tractocamiones con plataformas cargadas y cubiertas circulando por una carretera.",
+    "caption": "Planas cargadas en carretera",
     "renditions": [
       {
         "width": 480,
@@ -138,30 +148,6 @@ export const slotImages: Partial<Record<ImageSlot, ImageAsset>> = {
         "avif": "/images/carmag-plataformas-carretera-729.avif",
         "webp": "/images/carmag-plataformas-carretera-729.webp",
         "jpg": "/images/carmag-plataformas-carretera-729.jpg"
-      }
-    ]
-  }
-};
-
-export const galleryImages: readonly ImageAsset[] = [
-  {
-    "slug": "carmag-plataforma-carga-paletizada",
-    "width": 712,
-    "height": 475,
-    "alt": "Tractocamión con plataforma cargada de mercancía paletizada en el patio de una planta industrial.",
-    "caption": "Carga paletizada en plataforma",
-    "renditions": [
-      {
-        "width": 480,
-        "avif": "/images/carmag-plataforma-carga-paletizada-480.avif",
-        "webp": "/images/carmag-plataforma-carga-paletizada-480.webp",
-        "jpg": "/images/carmag-plataforma-carga-paletizada-480.jpg"
-      },
-      {
-        "width": 712,
-        "avif": "/images/carmag-plataforma-carga-paletizada-712.avif",
-        "webp": "/images/carmag-plataforma-carga-paletizada-712.webp",
-        "jpg": "/images/carmag-plataforma-carga-paletizada-712.jpg"
       }
     ]
   },

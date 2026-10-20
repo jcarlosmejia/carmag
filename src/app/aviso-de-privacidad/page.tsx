@@ -34,9 +34,10 @@ export default function PrivacyPage() {
 
           <h2>Datos que recibimos</h2>
           <p>
-            Este sitio no almacena datos. Cuando solicitas una cotización, el formulario abre tu propio programa de correo con la solicitud y tú decides
-            enviarla. Si nos escribes, recibimos los datos que incluyas: nombre, teléfono y, si los agregas, empresa, correo electrónico y los datos de la
-            carga (origen, destino, tipo, peso, dimensiones y fecha). Lo mismo aplica si nos contactas por WhatsApp o por teléfono.
+            Este sitio no almacena datos. El formulario de cotización arma un mensaje en tu navegador con los datos de la carga que captures
+            (origen, destino, mercancía, unidad, fecha, peso, medidas y observaciones) y abre WhatsApp; tú decides enviarlo. No pide nombre,
+            correo ni teléfono. Si nos escribes por WhatsApp o correo, o nos llamas, recibimos los datos que compartas por ese medio, incluido tu
+            número o dirección de correo.
           </p>
 
           <h2>Para qué los usamos</h2>

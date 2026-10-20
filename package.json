@@ -17,7 +17,7 @@
     "map": "node scripts/build-map.mjs",
     "docs": "node scripts/build-docs.mjs",
     "check": "node scripts/check-site.mjs",
-    "test": "node --test src/lib/quote.test.ts",
+    "test": "node --test src/lib/*.test.ts",
     "qa": "npm run lint && npm run typecheck && npm test && npm run brand -- --audit-only && npm run build && npm run check"
   },
   "dependencies": {

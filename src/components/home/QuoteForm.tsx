@@ -1,69 +1,72 @@
 'use client';
 
-import { useId, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { contact, whatsappLink } from '@/data/company';
 import {
+  UNIT_OPTIONS,
+  buildQuoteMessage,
+  copyText,
   emptyQuote,
-  operacionOptions,
-  quoteMailto,
-  quoteTemplateMailto,
   requiredFields,
-  unidadOptions,
+  unitFromSearch,
   validateQuote,
-  whatsappQuoteMessage,
   type QuoteErrors,
   type QuoteFields,
 } from '@/lib/quote';
 import { Icon } from '@/components/ui/Icon';
+import { trackCta } from '@/components/ui/CtaTracker';
 
-type FieldKey = keyof QuoteFields;
-const REQUIRED = new Set<FieldKey>(requiredFields);
+type Key = keyof QuoteFields;
+const REQUIRED = new Set<Key>(requiredFields);
 
-const INPUTS: readonly { name: FieldKey; label: string; type?: 'tel' | 'email' | 'date'; placeholder?: string; autoComplete?: string; wide?: boolean }[] = [
-  { name: 'nombre', label: 'Nombre', autoComplete: 'name', placeholder: 'Nombre y apellido' },
-  { name: 'telefono', label: 'Teléfono', type: 'tel', autoComplete: 'tel', placeholder: '10 dígitos' },
-  { name: 'empresa', label: 'Empresa', autoComplete: 'organization' },
-  { name: 'email', label: 'Correo', type: 'email', autoComplete: 'email' },
+type Field = { name: Key; label: string; placeholder?: string; type?: 'text' | 'date'; numeric?: boolean; hint?: string; suffix?: string };
+
+const MAIN: readonly Field[] = [
   { name: 'origen', label: 'Origen', placeholder: 'Ciudad y estado' },
   { name: 'destino', label: 'Destino', placeholder: 'Ciudad y estado' },
-  { name: 'carga', label: 'Tipo de carga', placeholder: 'Ej. lámina de acero, producto paletizado', wide: true },
-  { name: 'peso', label: 'Peso aproximado', placeholder: 'Ej. 20 toneladas' },
-  { name: 'dimensiones', label: 'Dimensiones', placeholder: 'Largo × ancho × alto' },
-  { name: 'fecha', label: 'Fecha de carga', type: 'date' },
+  { name: 'mercancia', label: 'Tipo de mercancía', placeholder: 'Ej. lámina de acero, producto en tarimas' },
+];
+const DIMENSIONS: readonly Field[] = [
+  { name: 'largo', label: 'Largo', numeric: true, suffix: 'm' },
+  { name: 'ancho', label: 'Ancho', numeric: true, suffix: 'm' },
+  { name: 'alto', label: 'Alto', numeric: true, suffix: 'm' },
 ];
 
-const SELECTS = [
-  { name: 'unidad', label: 'Tipo de unidad', options: unidadOptions },
-  { name: 'operacion', label: 'Operación', options: operacionOptions },
-] as const;
-
 /**
- * @description Quote request form. Validates in the browser, then opens the
- * visitor's mail client with the request addressed to the published mailbox.
- * Nothing is stored; the page never claims the message was sent. To move to a
- * Cloudflare Function later, replace only `onSubmit`.
+ * @description Quote form that prepares a WhatsApp message. No backend: it
+ * validates, builds the text and opens WhatsApp; the visitor sends it. The
+ * captured data is never stored, put in the URL or sent to analytics. Only the
+ * unit can arrive preselected, from `?unidad=` (equipment pages).
  *
- * Accessibility: native labels, `aria-required`/`aria-invalid`/
- * `aria-describedby` per field, and an error summary that receives focus and
- * links to each field.
+ * It never says "enviada": opening WhatsApp does not prove a message was sent.
+ * After opening, the number and a copy button stay visible in case WhatsApp
+ * did not open.
  */
 export function QuoteForm() {
   const [fields, setFields] = useState<QuoteFields>(emptyQuote);
   const [errors, setErrors] = useState<QuoteErrors>({});
   const [submitted, setSubmitted] = useState(false);
-  const [opened, setOpened] = useState(false);
+  const [prepared, setPrepared] = useState<string | null>(null);
+  const [copy, setCopy] = useState<'idle' | 'ok' | 'fail'>('idle');
   const summaryRef = useRef<HTMLDivElement>(null);
-  const uid = useId();
-  const id = (name: string) => `cotizar-${name}-${uid.replace(/:/g, '')}`;
+  const preparedRef = useRef<HTMLTextAreaElement>(null);
+  const uid = useId().replace(/:/g, '');
+  const id = (name: string) => `cotizar-${name}-${uid}`;
 
-  const email = contact.email;
-  const whatsapp = whatsappLink(whatsappQuoteMessage);
-  if (!email) return null;
+  // Unit preselection from the equipment pages. Read once after hydration so
+  // the server HTML and the first client render match.
+  useEffect(() => {
+    const unidad = unitFromSearch(window.location.search);
+    if (unidad) setFields((f) => ({ ...f, unidad }));
+  }, []);
 
-  function update(name: FieldKey, value: string) {
+  if (!contact.whatsapp) return null;
+  const whatsapp = contact.whatsapp;
+
+  function update(name: Key, value: string) {
     const next = { ...fields, [name]: value };
     setFields(next);
-    setOpened(false);
+    setPrepared(null);
     if (submitted) setErrors(validateQuote(next));
   }
 
@@ -73,18 +76,69 @@ export function QuoteForm() {
     setErrors(found);
     setSubmitted(true);
     if (Object.keys(found).length > 0) {
-      // After React commits the summary; rAF would stall in background tabs.
+      // After React commits the summary.
       setTimeout(() => summaryRef.current?.focus(), 0);
       return;
     }
-    window.location.href = quoteMailto(email!, fields);
-    setOpened(true);
+    const message = buildQuoteMessage(fields);
+    const href = whatsappLink(message);
+    if (href) window.open(href, '_blank', 'noopener,noreferrer');
+    trackCta('whatsapp-formulario', 'cotizar');
+    setPrepared(message);
+    setCopy('idle');
   }
 
-  const errorKeys = Object.keys(errors) as FieldKey[];
+  async function onCopy() {
+    if (!prepared) return;
+    const ok = await copyText(prepared, navigator.clipboard);
+    setCopy(ok ? 'ok' : 'fail');
+    if (!ok) preparedRef.current?.select();
+  }
+
+  const errorKeys = Object.keys(errors) as Key[];
+
+  const input = (f: Field) => {
+    const error = errors[f.name];
+    const required = REQUIRED.has(f.name);
+    const describedBy = [error ? `${id(f.name)}-error` : null, f.hint ? `${id(f.name)}-hint` : null].filter(Boolean).join(' ') || undefined;
+    return (
+      <div key={f.name}>
+        <label htmlFor={id(f.name)} className="field-label">
+          {f.label}
+          {f.suffix ? <span className="font-normal text-gray-dark"> ({f.suffix})</span> : null}
+          {required ? <span className="text-copper-deep"> *</span> : null}
+        </label>
+        <input
+          id={id(f.name)}
+          name={f.name}
+          type={f.type ?? 'text'}
+          inputMode={f.numeric ? 'decimal' : undefined}
+          value={fields[f.name]}
+          onChange={(e) => update(f.name, e.target.value)}
+          placeholder={f.placeholder}
+          required={required}
+          aria-required={required || undefined}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={describedBy}
+          autoComplete="off"
+          className="field-input"
+        />
+        {f.hint ? (
+          <p id={`${id(f.name)}-hint`} className="mt-1 text-xs text-gray-dark">
+            {f.hint}
+          </p>
+        ) : null}
+        {error ? (
+          <p id={`${id(f.name)}-error`} className="field-error">
+            {error}
+          </p>
+        ) : null}
+      </div>
+    );
+  };
 
   return (
-    <form id="formulario-cotizacion" onSubmit={onSubmit} noValidate aria-describedby="cotizar-nota">
+    <form id="formulario-cotizacion" onSubmit={onSubmit} noValidate aria-describedby="cotizar-explicacion">
       <div ref={summaryRef} tabIndex={-1} className={errorKeys.length ? 'mb-6 border-l-4 border-[var(--error)] bg-paper p-4' : 'sr-only'}>
         {errorKeys.length ? (
           <>
@@ -105,107 +159,86 @@ export function QuoteForm() {
       </div>
 
       <div className="grid gap-5 sm:grid-cols-2">
-        {INPUTS.map((f) => {
-          const error = errors[f.name];
-          const required = REQUIRED.has(f.name);
-          return (
-            <div key={f.name} className={f.wide ? 'sm:col-span-2' : undefined}>
-              <label htmlFor={id(f.name)} className="field-label">
-                {f.label}
-                {required ? <span className="text-copper-deep"> *</span> : <span className="font-normal text-gray-dark"> (opcional)</span>}
-              </label>
-              <input
-                id={id(f.name)}
-                name={f.name}
-                type={f.type ?? 'text'}
-                value={fields[f.name]}
-                onChange={(e) => update(f.name, e.target.value)}
-                placeholder={f.placeholder}
-                autoComplete={f.autoComplete}
-                required={required}
-                aria-required={required || undefined}
-                aria-invalid={error ? true : undefined}
-                aria-describedby={error ? `${id(f.name)}-error` : undefined}
-                className="field-input"
-              />
-              {error ? (
-                <p id={`${id(f.name)}-error`} className="field-error">
-                  {error}
-                </p>
-              ) : null}
-            </div>
-          );
-        })}
+        {input(MAIN[0]!)}
+        {input(MAIN[1]!)}
+        <div className="sm:col-span-2">{input(MAIN[2]!)}</div>
 
-        {SELECTS.map((s) => (
-          <div key={s.name}>
-            <label htmlFor={id(s.name)} className="field-label">
-              {s.label} <span className="font-normal text-gray-dark">(opcional)</span>
-            </label>
-            <select id={id(s.name)} name={s.name} value={fields[s.name]} onChange={(e) => update(s.name, e.target.value)} className="field-input">
-              {s.options.map((o) => (
-                <option key={o.value} value={o.value}>
-                  {o.label}
-                </option>
-              ))}
-            </select>
-          </div>
-        ))}
-
-        <div className="sm:col-span-2">
-          <label htmlFor={id('detalles')} className="field-label">
-            Detalles <span className="font-normal text-gray-dark">(opcional)</span>
+        <div>
+          <label htmlFor={id('unidad')} className="field-label">
+            Unidad
           </label>
-          <textarea
-            id={id('detalles')}
-            name="detalles"
-            rows={4}
-            value={fields.detalles}
-            onChange={(e) => update('detalles', e.target.value)}
-            placeholder="Maniobra de carga, horarios, frecuencia o cualquier dato que debamos considerar."
-            className="field-input"
-          />
+          <select id={id('unidad')} name="unidad" value={fields.unidad} onChange={(e) => update('unidad', e.target.value)} className="field-input">
+            <option value="">Sin elegir</option>
+            {UNIT_OPTIONS.map((o) => (
+              <option key={o.value} value={o.value}>
+                {o.label}
+              </option>
+            ))}
+          </select>
         </div>
+        {input({ name: 'fecha', label: 'Fecha estimada', type: 'date' })}
+        {input({ name: 'peso', label: 'Peso aproximado', suffix: 'kg', numeric: true, placeholder: 'Ej. 18000' })}
       </div>
 
-      <p id="cotizar-nota" className="mt-5 text-xs text-gray-dark">
-        <span className="text-copper-deep">*</span> Datos necesarios para cotizar. Al enviar, se abre tu programa de correo con la solicitud lista.
+      <fieldset className="mt-5" aria-describedby="cotizar-dimensiones-ayuda">
+        <legend className="field-label">Dimensiones de la carga</legend>
+        <p id="cotizar-dimensiones-ayuda" className="-mt-1 mb-2 text-xs text-gray-dark">
+          En metros. Mide la carga, no la unidad: largo (frente a fondo), ancho (lado a lado) y alto (del piso a la parte más alta).
+        </p>
+        <div className="grid grid-cols-3 gap-3">{DIMENSIONS.map(input)}</div>
+      </fieldset>
+
+      <div className="mt-5">
+        <label htmlFor={id('observaciones')} className="field-label">
+          Observaciones
+        </label>
+        <textarea
+          id={id('observaciones')}
+          name="observaciones"
+          rows={3}
+          value={fields.observaciones}
+          onChange={(e) => update('observaciones', e.target.value)}
+          placeholder="Maniobra de carga, horarios, frecuencia o cualquier detalle que debamos considerar."
+          className="field-input"
+        />
+      </div>
+
+      <p className="mt-4 text-xs text-gray-dark">
+        <span className="text-copper-deep">*</span> Obligatorio. Lo demás es opcional y ayuda a cotizar más rápido.
       </p>
 
-      <button id="enviar-cotizacion" type="submit" data-cta="formulario" data-cta-place="contacto" className="btn btn-primary mt-6 w-full">
-        <Icon name="mail" className="h-[1.125rem] w-[1.125rem]" />
-        Solicitar cotización
+      <button id="preparar-cotizacion" type="submit" className="btn btn-whatsapp mt-5 w-full">
+        <Icon name="whatsapp" className="h-[1.125rem] w-[1.125rem]" />
+        Preparar cotización por WhatsApp
       </button>
+      <p id="cotizar-explicacion" className="mt-2 text-sm text-gray-dark">
+        Abriremos WhatsApp con los datos que captures. Tú envías el mensaje.
+      </p>
 
-      <div className="mt-5 space-y-2 text-sm text-gray-dark">
-        {whatsapp ? (
-          <p>
-            ¿Prefieres respuesta inmediata?{' '}
-            <a id="formulario-whatsapp" href={whatsapp} target="_blank" rel="noopener noreferrer" data-cta="whatsapp" data-cta-place="formulario" className="text-link">
-              Escríbenos por WhatsApp
-            </a>
-          </p>
-        ) : null}
-        <p>
-          ¿Quieres enviar especificaciones?{' '}
-          <a id="formulario-correo" href={quoteTemplateMailto(email)} data-cta="correo" data-cta-place="formulario" className="text-link">
-            Envíalas por correo
-          </a>
-        </p>
-      </div>
-
-      <div aria-live="polite" className="mt-4">
-        {opened ? (
-          <p className="flex gap-2.5 border-l-4 border-teal bg-paper p-4 text-sm">
-            <Icon name="check" className="mt-0.5 h-5 w-5 shrink-0" />
-            <span>
-              Abrimos tu programa de correo con la solicitud. Envíala desde ahí para que la recibamos. Si no se abrió, escríbenos a{' '}
-              <a href={`mailto:${email}`} className="text-link">
-                {email}
-              </a>
-              .
-            </span>
-          </p>
+      <div aria-live="polite">
+        {prepared ? (
+          <div className="mt-5 border-l-4 border-teal bg-paper p-4 text-sm">
+            <p className="font-bold">Preparamos tu mensaje en WhatsApp.</p>
+            <p className="mt-1 text-gray-dark">
+              Si WhatsApp no se abrió, escríbenos al{' '}
+              <a href={whatsappLink(prepared) ?? undefined} target="_blank" rel="noopener noreferrer" className="text-link">
+                WhatsApp {whatsapp.display}
+              </a>{' '}
+              y pega este mensaje:
+            </p>
+            <label htmlFor={id('mensaje')} className="sr-only">
+              Mensaje preparado
+            </label>
+            <textarea ref={preparedRef} id={id('mensaje')} readOnly rows={7} value={prepared} className="field-input mt-3 text-sm" />
+            <div className="mt-3 flex flex-wrap items-center gap-3">
+              <button id="copiar-mensaje" type="button" onClick={onCopy} className="btn btn-outline btn-sm">
+                Copiar mensaje
+              </button>
+              <span role="status" className="text-sm text-gray-dark">
+                {copy === 'ok' ? 'Mensaje copiado.' : copy === 'fail' ? 'No se pudo copiar automáticamente: el texto quedó seleccionado para copiarlo.' : ''}
+              </span>
+            </div>
+          </div>
         ) : null}
       </div>
     </form>

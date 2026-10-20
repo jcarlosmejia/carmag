@@ -22,9 +22,13 @@
  * `hero` and `hero-mobile` must both be present for the hero to show a photo
  * (desktop crop ~16:10, mobile crop 4:3).
  */
+// PENDING EDIT, not published: 'WhatsApp Image 2026-10-17 at 15.39.11.jpeg'
+// (two tractors). The purple unit's door carries the previous-brand emblem
+// and any crop that excludes it loses one of the two tractors.
 const photos = [
   // Owner confirmed (2026-10-20) these photos are company-owned. Every
-  // previous-brand mark is cropped out or blurred; captions never name a unit.
+  // previous-brand mark is cropped out; small non-brand identifiers (door
+  // lettering, plates) are blurred. Captions never name a unit.
   {
     slug: 'carmag-tractocamion-plataforma-carga-atardecer',
     file: 'Screenshot_20260916_200126_WhatsApp.jpg',
@@ -51,18 +55,15 @@ const photos = [
     alt: 'Tractocamión con plataforma cargada de material enfardado, listo para salir a carretera al atardecer.',
   },
   {
-    slug: 'carmag-caja-seca-53-pies-tractocamion',
-    file: 'Screenshot_20260916_200455_WhatsApp.jpg',
+    // Owner photo 2026-10-17 15.09.25. No previous-brand mark in frame; the
+    // sleeper lettering is illegible in the source. Alt text does not state a
+    // trailer length: the photo alone cannot prove it.
+    slug: 'carmag-tractocamion-caja-cerrada-patio',
+    file: 'WhatsApp Image 2026-10-17 at 15.09.25.jpeg',
     slot: 'caja-seca',
     ratio: 3 / 2,
-    region: { left: 0, top: 0.08, width: 1, height: 0.82 },
-    // Sleeper identifier block, door emblem, lower door panel.
-    redact: [
-      { left: 0.81, top: 0.488, width: 0.028, height: 0.028 },
-      { left: 0.876, top: 0.474, width: 0.026, height: 0.03 },
-      { left: 0.864, top: 0.522, width: 0.044, height: 0.02 },
-    ],
-    alt: 'Tractocamión conectado a una caja seca blanca de 53 pies, estacionado en un patio junto a la carretera.',
+    region: { left: 0.15, top: 0, width: 0.85, height: 1 },
+    alt: 'Tractocamión negro enganchado a una caja cerrada blanca, estacionado en un patio de tierra.',
   },
   {
     slug: 'carmag-plataforma-estructuras-acero',
@@ -76,26 +77,11 @@ const photos = [
   {
     slug: 'carmag-plataformas-carretera',
     file: 'Screenshot_20260916_200204_WhatsApp.jpg',
-    slot: 'operacion',
+    slot: 'gallery',
     ratio: 3 / 2,
     region: { left: 0, top: 0, width: 1, height: 0.8 },
     alt: 'Dos tractocamiones con plataformas cargadas y cubiertas circulando por una carretera.',
-  },
-  {
-    slug: 'carmag-plataforma-carga-paletizada',
-    file: 'Screenshot_20260916_200408_WhatsApp.jpg',
-    slot: 'gallery',
-    ratio: 3 / 2,
-    // Crops out third-party facility signage; blurs door emblem and plate.
-    region: { left: 0, top: 0.27, width: 0.66, height: 0.6 },
-    redact: [
-      { left: 0.472, top: 0.472, width: 0.028, height: 0.046 },
-      { left: 0.631, top: 0.584, width: 0.026, height: 0.022 },
-      // Facility name over the office entrance.
-      { left: 0.148, top: 0.488, width: 0.05, height: 0.026 },
-    ],
-    alt: 'Tractocamión con plataforma cargada de mercancía paletizada en el patio de una planta industrial.',
-    caption: 'Carga paletizada en plataforma',
+    caption: 'Planas cargadas en carretera',
   },
   {
     slug: 'carmag-plataforma-material-reciclable',

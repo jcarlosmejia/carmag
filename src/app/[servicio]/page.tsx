@@ -13,6 +13,7 @@ import { EquipmentDiagram } from '@/components/home/EquipmentDiagram';
 import { CtaGroup } from '@/components/ui/Cta';
 import { Icon } from '@/components/ui/Icon';
 import { Photo } from '@/components/ui/Photo';
+import { quoteTemplate } from '@/lib/quote';
 
 type Props = { params: Promise<{ servicio: string }> };
 
@@ -49,9 +50,9 @@ export default async function ServicePage({ params }: Props) {
   return (
     <>
       <ServiceStructuredData item={item} />
-      <Header />
+      <Header unit={item.unit} />
       <main id="contenido">
-        <section className="section" aria-labelledby="servicio-titulo">
+        <section id="servicio-inicio" className="section" aria-labelledby="servicio-titulo">
           <div className="shell">
             <nav aria-label="Ruta de navegación">
               <ol className="flex flex-wrap items-center gap-2 text-sm text-gray-light">
@@ -80,7 +81,7 @@ export default async function ServicePage({ params }: Props) {
                   {item.page.h1}
                 </h1>
                 <p className="lede mt-6">{item.page.lede}</p>
-                <CtaGroup place={`pagina-${item.slug}`} whatsappMessage={item.whatsappMessage} className="mt-8" />
+                <CtaGroup place={`pagina-${item.slug}`} unit={item.unit} className="mt-8" />
               </div>
               {photo ? (
                 <figure className="border-l-[6px] border-copper">
@@ -178,14 +179,14 @@ export default async function ServicePage({ params }: Props) {
             {hasContactSection ? (
               <div className="lg:justify-self-end">
                 <p className="display-3 text-white">¿Tienes una carga por mover?</p>
-                <CtaGroup place={`cierre-${item.slug}`} whatsappMessage={item.whatsappMessage} className="mt-5" />
+                <CtaGroup place={`cierre-${item.slug}`} unit={item.unit} className="mt-5" />
               </div>
             ) : null}
           </div>
         </section>
       </main>
       <Footer />
-      <WhatsAppFloat message={item.whatsappMessage} />
+      <WhatsAppFloat message={quoteTemplate(item.unit)} />
     </>
   );
 }

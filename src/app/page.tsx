@@ -7,13 +7,13 @@ import { Hero, heroPhotos } from '@/components/home/Hero';
 import { Equipment } from '@/components/home/Equipment';
 import { Coverage } from '@/components/home/Coverage';
 import { Contact } from '@/components/home/Contact';
-import { Faq, FinalCta, Gallery, Process, Reasons, Sectors, Services } from '@/components/home/Sections';
+import { Evidence, Faq, Services } from '@/components/home/Sections';
 import { HeroPreload } from '@/components/ui/Photo';
 import { whatsappQuoteMessage } from '@/lib/quote';
 
 const title = 'Transporte de Carga y Fletes en Guadalajara';
 const description =
-  'Transporte de carga y fletes desde Guadalajara a todo México. Caja seca de 53 pies, plataforma de 40 pies, carga industrial y servicio dedicado, recurrente o spot.';
+  'Transporte de carga y fletes desde Guadalajara a todo México. Caja seca de 53 pies, planas de 40 pies en adelante, carga industrial y servicio dedicado, recurrente o spot.';
 
 export const metadata: Metadata = {
   title: { absolute: `${title} | CARMAG TRANSPORTS` },
@@ -24,11 +24,12 @@ export const metadata: Metadata = {
 };
 
 /**
- * @description Home. Bands alternate teal and light:
- * hero + figures (teal) → equipo (paper) → servicios (teal) → sectores (paper)
- * → cobertura (teal) → nosotros (white) → galería (teal) → cómo cotizar
- * (paper) → cotiza tu transporte (teal) → preguntas (white) → CTA (copper).
- * Contact-dependent sections render only once a channel is published.
+ * @description Home, in decision order:
+ * propuesta y cotización (teal) → comparación de equipo (paper) → modalidades
+ * (teal) → cobertura (teal) → operación y diferenciadores (white) → formulario
+ * #cotizar (teal) → preguntas y contacto (white).
+ * Equipment details live on each equipment page. Contact-dependent sections
+ * render only once a channel is published.
  */
 export default function HomePage() {
   return (
@@ -40,14 +41,10 @@ export default function HomePage() {
         <Hero />
         <Equipment />
         <Services />
-        <Sectors />
         <Coverage />
-        <Reasons />
-        <Gallery />
-        <Process />
+        <Evidence />
         <Contact />
         <Faq />
-        <FinalCta />
       </main>
       <Footer />
       <WhatsAppFloat message={whatsappQuoteMessage} />

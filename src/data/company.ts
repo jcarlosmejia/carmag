@@ -69,19 +69,20 @@ export const company = {
   fleetSize: null as number | null,
   tagline: 'Transporte de carga y fletes desde Guadalajara',
   valueProposition:
-    'Transporte de carga y fletes desde Guadalajara para empresas: caja seca de 53 pies y plataforma de 40 pies, servicio spot, recurrente y dedicado.',
+    'Transporte de carga y fletes desde Guadalajara para empresas: caja seca de 53 pies y planas de 40 pies en adelante, servicio spot, recurrente y dedicado.',
 } as const;
 
 /**
  * Contact channels from the CARMAG business card. Owner authorized public use
- * on 2026-10-20 with the Phase 0 roles: primary phone, secondary phone (also
- * the WhatsApp line) and the card's Gmail mailbox. Set `confirmed` to `false`
- * to withdraw a channel; every placement and the JSON-LD follow.
+ * on 2026-10-20: the calls line, the WhatsApp line and the card's Gmail
+ * mailbox. Calls and WhatsApp are different numbers on purpose; the UI labels
+ * each by its function. The WhatsApp line is not repeated as a second calls
+ * number, so visitors never have to guess which one to use. Set `confirmed`
+ * to `false` to withdraw a channel; every placement and the JSON-LD follow.
  */
 const contactCandidates = {
   /** `tel:` form and display form. */
   phone: pending({ tel: '+523343995054', display: '+52 33 4399 5054' }, true),
-  phoneSecondary: pending({ tel: '+523310131863', display: '+52 33 1013 1863' }, true),
   /** E.164 digits, no `+`. */
   whatsapp: pending({ digits: '523310131863', display: '+52 33 1013 1863' }, true),
   /** Temporary until contacto@carmag.com.mx exists. */
@@ -90,7 +91,6 @@ const contactCandidates = {
 
 export const contact = {
   phone: publish(contactCandidates.phone),
-  phoneSecondary: publish(contactCandidates.phoneSecondary),
   whatsapp: publish(contactCandidates.whatsapp),
   email: publish(contactCandidates.email),
 } as const;
@@ -110,13 +110,6 @@ export const privacyResponsible = {
 export const privacyNoticeReady = Boolean(
   privacyResponsible.legalName && privacyResponsible.address && privacyResponsible.email,
 );
-
-/**
- * The quote form collects personal data, so in production it needs both a
- * destination mailbox and a published privacy notice. Review builds show it
- * with the mailbox alone so the layout can be checked.
- */
-export const quoteFormEnabled = Boolean(contact.email) && (privacyNoticeReady || isReviewBuild);
 
 /** Social profiles: none verified, none shown. */
 export const socialProfiles: readonly { name: string; url: string }[] = [];
@@ -168,11 +161,29 @@ export const pendingVerification: readonly VerificationItem[] = [
   {
     id: 'photos',
     question:
-      '¿Puede enviar fotografías originales en alta resolución, idealmente con unidades rotuladas CARMAG (Freightliner Cascadia, caja seca 53\', plataforma 40\', maniobras de carga)?',
+      '¿Puede enviar fotografías originales en alta resolución, idealmente con unidades rotuladas CARMAG (Freightliner Cascadia, caja seca 53\', planas de 40\' en adelante, maniobras de carga)?',
     reason:
       'Las fotos actuales son de la empresa (autorizadas el 2026-10-20), pero vienen de capturas de WhatsApp de unos 1,000 px y no muestran unidades rotuladas CARMAG. Fotos originales en alta resolución mejoran el hero en pantallas grandes.',
     currentBehaviour:
       'Se publican 7 fotos; toda marca, emblema, rótulo de identificación y placa de la identidad anterior está fuera de cuadro o difuminada (scripts/photos.config.mjs). Al agregar fotos en photos/ y correr npm run images, se sustituyen sin cambiar el diseño.',
+    impact: 'limits-messaging',
+  },
+  {
+    id: 'photo-two-tractors',
+    question:
+      'La foto de los dos tractocamiones (WhatsApp 2026-10-17 15.39.11) muestra en la puerta del tractocamión morado el emblema de la identidad anterior y el número de unidad «003». ¿Puede enviar una versión sin ese emblema u otra toma de los dos tractocamiones?',
+    reason:
+      'Recortar el emblema deja un solo tractocamión y se pierde el sujeto de la foto. No se publica una imagen con referencias a la identidad anterior ni se cubre con logotipos.',
+    currentBehaviour: 'La foto está copiada en photos/ sin publicar. La sección de operación usa las demás fotos.',
+    impact: 'nice-to-have',
+  },
+  {
+    id: 'trust-evidence',
+    question:
+      '¿Qué evidencia comercial verificable puede publicarse: testimonios autorizados por escrito (nombre, empresa y permiso), años de operación documentados, número de unidades activas, horario de atención y fotos de unidades rotuladas CARMAG?',
+    reason:
+      'La sección de diferenciadores solo muestra hechos que el sitio ya respalda. No se inventan clientes, certificaciones, seguros, rastreo, tiempos de respuesta ni garantías.',
+    currentBehaviour: 'Se muestran fotos de operación y cuatro diferenciadores verificables; sin testimonios ni cifras de desempeño.',
     impact: 'limits-messaging',
   },
   {

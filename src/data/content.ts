@@ -8,17 +8,8 @@ import type { MapPointId } from './mapGeometry';
 export const hero = {
   overline: 'Base en Guadalajara, Jalisco',
   title: 'Transporte de carga y fletes desde Guadalajara a todo México',
-  lede: 'Caja seca de 53 pies y plataforma de 40 pies para carga comercial e industrial. Servicio spot, recurrente o dedicado, con salida desde la Zona Metropolitana de Guadalajara.',
-  chips: ["Caja seca 53'", "Plataforma 40'", 'Carga completa (FTL)', 'Spot, recurrente y dedicado', 'Pacífico · Norte · Bajío'],
+  lede: 'Caja seca de 53 pies y planas de 40 pies en adelante para carga comercial e industrial. Servicio spot, recurrente o dedicado, con salida desde la Zona Metropolitana de Guadalajara.',
 } as const;
-
-/** Confirmed figures only. No counters, no fleet size, no founding year. */
-export const figures = [
-  { value: "53'", label: 'Caja seca' },
-  { value: "40'", label: 'Plataforma' },
-  { value: '3', label: 'Corredores de servicio' },
-  { value: 'GDL', label: 'Base operativa' },
-] as const;
 
 /** Owner wording, 2026-10-19. Shown wherever capacity comes up. */
 export const capacityDisclaimer =
@@ -26,26 +17,31 @@ export const capacityDisclaimer =
 
 export type Service = { id: string; title: string; body: string };
 
-export const services: readonly Service[] = [
-  {
-    id: 'carga-completa',
-    title: 'Carga completa (FTL)',
-    body: 'Una unidad para tu embarque, de origen a destino, sin consolidar con mercancía de terceros. Es la base de cada servicio que cotizamos.',
-  },
+/** The three operating models: what a buyer chooses between. */
+export const modalities: readonly Service[] = [
   {
     id: 'spot',
-    title: 'Servicio spot',
+    title: 'Spot',
     body: 'Un viaje único cuando lo necesitas: nos das origen, destino y fecha de carga, y te cotizamos ese movimiento.',
   },
   {
     id: 'recurrente',
-    title: 'Servicio recurrente',
+    title: 'Recurrente',
     body: 'Viajes repetidos con la frecuencia de tu operación, para que tu abastecimiento o tus entregas no dependan de buscar transporte cada semana.',
   },
   {
     id: 'dedicado',
-    title: 'Transporte dedicado',
-    body: 'Capacidad de transporte asignada a los requerimientos de tu operación mediante un acuerdo comercial. La disponibilidad, la frecuencia y la asignación de unidades se definen en el contrato.',
+    title: 'Dedicado',
+    body: 'Capacidad de transporte asignada a los requerimientos de tu operación mediante un acuerdo comercial. Disponibilidad, frecuencia y asignación de unidades se definen en el contrato.',
+  },
+];
+
+/** Conditions that apply to every model. */
+export const serviceNotes: readonly Service[] = [
+  {
+    id: 'carga-completa',
+    title: 'Carga completa (FTL)',
+    body: 'La unidad viaja solo con tu embarque, de origen a destino, sin consolidar con mercancía de terceros.',
   },
   {
     id: 'retorno',
@@ -55,19 +51,12 @@ export const services: readonly Service[] = [
   {
     id: 'alcance',
     title: 'Local, regional y nacional',
-    body: 'Fletes dentro de la Zona Metropolitana de Guadalajara, hacia el occidente y el Bajío, y a otros destinos de la República bajo cotización.',
+    body: 'Dentro de la Zona Metropolitana de Guadalajara, hacia el occidente y el Bajío, y a otros destinos de la República bajo cotización.',
   },
 ];
 
-export const sectors = [
-  { name: 'Acero y productos metálicos', fit: "Plataforma 40'" },
-  { name: 'Manufactura y producción industrial', fit: "Caja seca 53' · Plataforma 40'" },
-  { name: 'Materiales de construcción', fit: "Plataforma 40'" },
-  { name: 'Maquinaria y equipo industrial', fit: "Plataforma 40'" },
-  { name: 'Bienes de consumo y mercancía empacada', fit: "Caja seca 53'" },
-  { name: 'Alimentos que no requieren refrigeración', fit: "Caja seca 53'" },
-  { name: 'Almacenaje, logística y distribución', fit: "Caja seca 53'" },
-] as const;
+/** Every Service node in the JSON-LD; mirrors the visible text. */
+export const services: readonly Service[] = [...modalities, ...serviceNotes];
 
 export type Corridor = {
   id: 'pacifico' | 'norte' | 'bajio';
@@ -119,7 +108,7 @@ export const corridors: readonly Corridor[] = [
       { id: 'celaya', name: 'Celaya' },
       { id: 'queretaro', name: 'Querétaro' },
     ],
-    summary: 'Los polos industriales de Aguascalientes, Guanajuato y Querétaro, a pocas horas de Guadalajara.',
+    summary: 'Los polos industriales de Aguascalientes, Guanajuato y Querétaro.',
   },
 ];
 
@@ -129,39 +118,28 @@ export const coverage = {
   note: 'Los destinos son cobertura sujeta a disponibilidad de unidad, no salidas programadas. El servicio es dentro de la República Mexicana.',
 } as const;
 
+/**
+ * Differentiators the visitor can check: each is a fact stated elsewhere on
+ * the site or in the quote itself. No clients, certifications, insurance,
+ * tracking, response times or guarantees until the owner documents them.
+ */
 export const reasons = [
   {
     title: 'Base en Guadalajara',
-    body: 'Salimos desde la Zona Metropolitana de Guadalajara, punto de partida natural hacia el Pacífico, el Norte y el Bajío.',
-  },
-  {
-    title: 'La unidad correcta para tu carga',
-    body: "Caja seca de 53' para mercancía que debe viajar protegida y plataforma de 40' para carga industrial que se maniobra por los costados o desde arriba.",
+    body: 'Salimos desde la Zona Metropolitana de Guadalajara hacia el Pacífico, el Norte y el Bajío.',
   },
   {
     title: 'Trato directo con el transportista',
-    body: 'Cotizas y programas con CARMAG TRANSPORTS, la empresa que mueve tu carga.',
-  },
-  {
-    title: 'Spot, recurrente o dedicado',
-    body: 'Un viaje cuando lo necesitas, viajes con frecuencia fija o capacidad asignada por contrato: el esquema se ajusta a tu operación.',
-  },
-  {
-    title: 'Corredores definidos',
-    body: 'Pacífico, Norte y Bajío son nuestros corredores de servicio, y en ellos buscamos cargas de retorno que ayudan a mejorar tu tarifa.',
+    body: 'Cotizas y programas con CARMAG TRANSPORTS, la empresa que mueve tu carga, por WhatsApp, teléfono o correo.',
   },
   {
     title: 'Condiciones claras antes de cargar',
-    body: 'Confirmamos unidad, capacidad, maniobra y fecha antes del servicio, para que la cotización refleje lo que realmente se va a mover.',
+    body: 'Confirmamos unidad, configuración, capacidad, maniobra y fecha antes del servicio, para que la tarifa refleje lo que se va a mover.',
   },
-] as const;
-
-export const steps = [
-  { title: 'Cuéntanos tu ruta', body: 'Origen, destino y tipo de carga.' },
-  { title: 'Detalla la carga', body: 'Peso aproximado, dimensiones y fecha de carga.' },
-  { title: 'Definimos la unidad', body: "Caja seca 53' o plataforma 40', y la maniobra de carga y descarga." },
-  { title: 'Recibe tu tarifa', body: 'Te enviamos precio y condiciones del servicio.' },
-  { title: 'Programamos la carga', body: 'Confirmas y agendamos la ventana de carga.' },
+  {
+    title: 'Restricciones a la vista',
+    body: 'Sin refrigeración, sin sobredimensión ni sobrepeso, y disponibilidad sujeta a confirmación: lo sabes antes de cotizar.',
+  },
 ] as const;
 
 export const faqs = [
@@ -171,7 +149,7 @@ export const faqs = [
   },
   {
     q: '¿Qué tipo de unidades tienen?',
-    a: 'Caja seca de 53 pies para carga general no refrigerada y plataforma de 40 pies para carga industrial, materiales y maquinaria.',
+    a: 'Caja seca de 53 pies para carga general no refrigerada y planas de 40 pies en adelante para carga industrial, materiales y maquinaria. La longitud y configuración de la plana se confirman al cotizar.',
   },
   {
     q: '¿Cuánto peso pueden mover?',
@@ -190,23 +168,11 @@ export const faqs = [
     a: 'No. Nuestras cajas secas son para carga general que no requiere refrigeración, como producto empacado, mercancía paletizada o alimentos no perecederos.',
   },
   {
-    q: '¿Puedo contratar un solo viaje?',
-    a: 'Sí. El servicio spot es un viaje único: nos das origen, destino, tipo de carga y fecha, y te cotizamos ese movimiento.',
-  },
-  {
-    q: '¿Qué es el transporte dedicado?',
-    a: 'Es capacidad de transporte asignada a los requerimientos de tu operación mediante un acuerdo comercial. La disponibilidad, la frecuencia y la asignación de unidades se definen en el contrato.',
-  },
-  {
-    q: '¿Qué son las cargas de retorno?',
-    a: 'Son fletes que aprovechan una unidad con ruta de regreso disponible, lo que permite ofrecer una tarifa más competitiva. Se dan principalmente en los corredores Pacífico, Norte y Bajío, y siempre están sujetas a disponibilidad.',
-  },
-  {
     q: '¿Qué datos necesitan para cotizar?',
-    a: 'Origen, destino y tipo de carga. Con el peso aproximado, las dimensiones, la fecha de carga y el tipo de unidad que necesitas, la tarifa sale más rápido y más precisa.',
+    a: 'Origen, destino y tipo de mercancía. Con la unidad, la fecha estimada, el peso y las medidas de la carga, la tarifa sale más rápido y más precisa.',
   },
   {
-    q: '¿Atienden fletes locales en Guadalajara?',
-    a: 'Sí. Movemos carga dentro de la Zona Metropolitana de Guadalajara, además de servicios regionales y nacionales.',
+    q: '¿Llamo o escribo por WhatsApp?',
+    a: 'Como prefieras: son líneas distintas. Las llamadas van al número de Llamadas y los mensajes al de WhatsApp; ambos aparecen en la sección de cotización y al pie de cada página.',
   },
 ] as const;

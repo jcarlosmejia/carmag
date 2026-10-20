@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import localFont from 'next/font/local';
 import { company, isReviewBuild, siteUrl } from '@/data/company';
 import { CtaTracker } from '@/components/ui/CtaTracker';
+import { HashScroll } from '@/components/ui/HashScroll';
 import './globals.css';
 
 /**
@@ -53,7 +54,8 @@ export const viewport: Viewport = {
 };
 
 /**
- * @description Root layout: font, skip link, review banner, CTA tracker.
+ * @description Root layout: font, skip link, review banner, CTA tracker,
+ * fragment scroll.
  * @param children Page content.
  */
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -70,6 +72,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         ) : null}
         {children}
         <CtaTracker />
+        <HashScroll />
       </body>
     </html>
   );

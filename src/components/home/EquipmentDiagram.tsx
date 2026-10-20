@@ -12,7 +12,7 @@ export function EquipmentDiagram({ item, tone = 'light', className = '' }: { ite
   const bg = tone === 'dark' ? '#1a4748' : '#f3f6f6';
   const van = item.slug === 'caja-seca-53-pies';
   return (
-    <svg viewBox="0 0 340 150" className={className} role="img" aria-label={`Diagrama de ${item.name}: ${item.length.ft} pies, ${item.length.m} metros de largo`}>
+    <svg viewBox="0 0 340 150" className={className} role="img" aria-label={`Diagrama de ${item.name}: ${item.lengthLabel}`}>
       <g transform="translate(-490 -330)">
         {van ? (
           <rect x="500" y="346" width="230" height="74" rx="3" fill="#c8794b" />
@@ -50,7 +50,7 @@ export function EquipmentDiagram({ item, tone = 'light', className = '' }: { ite
           strokeWidth="6"
           paintOrder="stroke"
         >
-          {item.length.ft} pies · {item.length.m} m
+          {item.lengthLabel}
         </text>
       </g>
     </svg>

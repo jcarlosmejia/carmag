@@ -1,5 +1,6 @@
 import { coverage, corridors } from '@/data/content';
-import { WhatsAppCta } from '@/components/ui/Cta';
+import { hasContactSection } from '@/data/navigation';
+import { Icon } from '@/components/ui/Icon';
 import { MexicoMap } from './MexicoMap';
 import { SectionHeading } from './Sections';
 
@@ -11,10 +12,10 @@ import { SectionHeading } from './Sections';
  */
 export function Coverage() {
   return (
-    <section id="cobertura" className="section" aria-labelledby="cobertura-titulo">
+    <section id="cobertura" className="section border-t border-teal-border" aria-labelledby="cobertura-titulo">
       <div className="shell">
         <div className="grid gap-6 lg:grid-cols-[1fr_minmax(0,28rem)] lg:items-end lg:gap-16">
-          <SectionHeading id="cobertura-titulo" overline="Corredores de servicio y cobertura nacional" title={coverage.title} />
+          <SectionHeading id="cobertura-titulo" overline="Cobertura y disponibilidad" title={coverage.title} />
           <p className="text-mist">{coverage.body}</p>
         </div>
 
@@ -49,7 +50,12 @@ export function Coverage() {
               ))}
             </ul>
             <p className="mt-6 border-l-2 border-copper-light pl-4 text-sm text-gray-light">{coverage.note}</p>
-            <WhatsAppCta place="cobertura" label="Cotizar mi ruta por WhatsApp" small className="mt-6" />
+            {hasContactSection ? (
+              <a id="cobertura-cotizar" href="#cotizar" data-cta="cotizar" data-cta-place="cobertura" className="text-link mt-6 inline-flex min-h-11 items-center gap-2">
+                Cotizar mi ruta
+                <Icon name="arrow" className="h-4 w-4" />
+              </a>
+            ) : null}
           </div>
         </div>
       </div>

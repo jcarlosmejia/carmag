@@ -10,7 +10,7 @@ un dato sin confirmar no se publica, no se sustituye por una suposición y no se
 toma de la competencia. Los campos correspondientes en `src/data/company.ts`
 están en `null` y la interfaz oculta lo que no puede sostener.
 
-**Total de puntos pendientes: 12**
+**Total de puntos pendientes: 14**
 
 ## Bloquea la publicación (1)
 
@@ -22,7 +22,7 @@ _El sitio no debe publicarse sin esto._
 - **Qué hace el sitio hoy:** No se genera la página de aviso de privacidad ni su enlace, y el formulario permanece oculto en producción.
 - **Identificador interno:** `legal-identity`
 
-## Limita el mensaje (4)
+## Limita el mensaje (5)
 
 _El sitio funciona, pero no puede afirmarlo hasta que se confirme._
 
@@ -32,11 +32,17 @@ _El sitio funciona, pero no puede afirmarlo hasta que se confirme._
 - **Qué hace el sitio hoy:** Se generan versiones trazadas del logotipo con Montserrat (npm run brand). Al recibir el maestro, se sustituyen en scripts/build-brand.mjs.
 - **Identificador interno:** `logo-master`
 
-### ¿Puede enviar fotografías originales en alta resolución, idealmente con unidades rotuladas CARMAG (Freightliner Cascadia, caja seca 53', plataforma 40', maniobras de carga)?
+### ¿Puede enviar fotografías originales en alta resolución, idealmente con unidades rotuladas CARMAG (Freightliner Cascadia, caja seca 53', planas de 40' en adelante, maniobras de carga)?
 
 - **Por qué no se publica:** Las fotos actuales son de la empresa (autorizadas el 2026-10-20), pero vienen de capturas de WhatsApp de unos 1,000 px y no muestran unidades rotuladas CARMAG. Fotos originales en alta resolución mejoran el hero en pantallas grandes.
 - **Qué hace el sitio hoy:** Se publican 7 fotos; toda marca, emblema, rótulo de identificación y placa de la identidad anterior está fuera de cuadro o difuminada (scripts/photos.config.mjs). Al agregar fotos en photos/ y correr npm run images, se sustituyen sin cambiar el diseño.
 - **Identificador interno:** `photos`
+
+### ¿Qué evidencia comercial verificable puede publicarse: testimonios autorizados por escrito (nombre, empresa y permiso), años de operación documentados, número de unidades activas, horario de atención y fotos de unidades rotuladas CARMAG?
+
+- **Por qué no se publica:** La sección de diferenciadores solo muestra hechos que el sitio ya respalda. No se inventan clientes, certificaciones, seguros, rastreo, tiempos de respuesta ni garantías.
+- **Qué hace el sitio hoy:** Se muestran fotos de operación y cuatro diferenciadores verificables; sin testimonios ni cifras de desempeño.
+- **Identificador interno:** `trust-evidence`
 
 ### ¿Qué configuración vehicular y número de ejes tiene cada unidad, y qué capacidad de carga autorizada conforme a la NOM-012-SCT-2?
 
@@ -50,7 +56,7 @@ _El sitio funciona, pero no puede afirmarlo hasta que se confirme._
 - **Qué hace el sitio hoy:** No existe sección de seguridad de la carga ni se menciona GPS, seguro o certificaciones. El seguimiento de embarques queda como integración futura, desactivada.
 - **Identificador interno:** `cargo-security`
 
-## Mejora opcional (7)
+## Mejora opcional (8)
 
 _No bloquea nada; mejora el resultado si se resuelve._
 
@@ -59,6 +65,12 @@ _No bloquea nada; mejora el resultado si se resuelve._
 - **Por qué no se publica:** Un buzón con el dominio propio da más confianza a compradores B2B que una cuenta de Gmail.
 - **Qué hace el sitio hoy:** Se publica contacto.carmag@gmail.com (autorizado). El cambio es un solo valor en src/data/company.ts; los registros MX deben conservarse al migrar el DNS.
 - **Identificador interno:** `email-domain`
+
+### La foto de los dos tractocamiones (WhatsApp 2026-10-17 15.39.11) muestra en la puerta del tractocamión morado el emblema de la identidad anterior y el número de unidad «003». ¿Puede enviar una versión sin ese emblema u otra toma de los dos tractocamiones?
+
+- **Por qué no se publica:** Recortar el emblema deja un solo tractocamión y se pierde el sujeto de la foto. No se publica una imagen con referencias a la identidad anterior ni se cubre con logotipos.
+- **Qué hace el sitio hoy:** La foto está copiada en photos/ sin publicar. La sección de operación usa las demás fotos.
+- **Identificador interno:** `photo-two-tractors`
 
 ### ¿Hay cajas secas de 48 pies disponibles actualmente?
 

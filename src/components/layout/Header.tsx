@@ -6,13 +6,15 @@ import { navItems } from '@/data/navigation';
 import { PhoneLink, QuoteButton, WhatsAppCta } from '@/components/ui/Cta';
 import { Icon } from '@/components/ui/Icon';
 import { Logo } from '@/components/ui/Logo';
+import type { UnitKey } from '@/lib/quote';
 
 /**
  * @description Sticky header with a mobile drawer. The toggle owns
  * `aria-expanded`/`aria-controls`; the open drawer traps Tab, Escape closes it
  * and returns focus to the toggle, and background scroll is locked.
+ * @param unit Unit of the equipment page, kept by the quote and WhatsApp CTAs.
  */
-export function Header() {
+export function Header({ unit }: { unit?: UnitKey }) {
   const [open, setOpen] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const drawerRef = useRef<HTMLDivElement>(null);
@@ -83,7 +85,7 @@ export function Header() {
           <span className="hidden xl:block">
             <PhoneLink place="header" className="text-sm text-white" />
           </span>
-          <QuoteButton place="header" small className="hidden sm:inline-flex" />
+          <QuoteButton place="header" unit={unit} small className="hidden sm:inline-flex" />
           <button
             ref={toggleRef}
             id="menu-toggle"
@@ -119,9 +121,9 @@ export function Header() {
             ))}
           </ul>
           <div className="mt-6 flex flex-col gap-3">
-            <WhatsAppCta place="menu-movil" className="w-full" />
-            <QuoteButton place="menu-movil" className="w-full" />
-            <PhoneLink place="menu-movil" prefix="Llamar al" className="justify-center text-white" />
+            <QuoteButton place="menu-movil" unit={unit} className="w-full" />
+            <WhatsAppCta place="menu-movil" unit={unit} solid className="w-full" />
+            <PhoneLink place="menu-movil" prefix="Llamadas:" className="justify-center text-white" />
           </div>
         </nav>
       </div>

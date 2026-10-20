@@ -1,30 +1,62 @@
 import { contact, whatsappLink } from '@/data/company';
-import { quoteHref } from '@/data/navigation';
-import { quoteTemplateMailto, whatsappQuoteMessage } from '@/lib/quote';
+import { hasContactSection } from '@/data/navigation';
+import { quoteHrefFor, quoteTemplate, quoteTemplateMailto, type UnitKey } from '@/lib/quote';
 import { Icon } from './Icon';
 
 /**
- * Contact CTAs, one order everywhere: WhatsApp (primary), e-mail (secondary),
- * phone (tertiary, primary number first). Each returns `null` while its channel
- * is unpublished, so no broken or placeholder action ever renders. Every
- * control carries `data-cta`/`data-cta-place` for `CtaTracker`.
+ * Contact CTAs, one hierarchy everywhere:
+ *   1. "Solicitar cotización" — copper button to the form (#cotizar).
+ *   2. WhatsApp directo — outlined button, the alternative.
+ *   3. Llamadas — plain link, the additional option.
+ * Each returns `null` while its channel is unpublished. Every control carries
+ * `data-cta`/`data-cta-place` for `CtaTracker` (names only, never data).
  */
 
 type Base = { place: string; className?: string; small?: boolean };
 
 /**
- * @description Primary CTA: WhatsApp with a prefilled quote template.
- * @param label Button text.
- * @param message Prefilled message.
+ * @description Main CTA: the quote form, with the unit preselected when known.
+ * @param unit Unit to preselect (equipment pages).
+ * @param variant `primary` (copper) or `dark` (teal).
+ */
+export function QuoteButton({
+  place,
+  unit,
+  label = 'Solicitar cotización',
+  variant = 'primary',
+  className = '',
+  small = false,
+}: Base & { unit?: UnitKey; label?: string; variant?: 'primary' | 'dark' }) {
+  if (!hasContactSection) return null;
+  return (
+    <a
+      id={`cta-cotizar-${place}`}
+      href={quoteHrefFor(unit)}
+      data-cta="cotizar"
+      data-cta-place={place}
+      className={`btn btn-${variant} ${small ? 'btn-sm' : ''} ${className}`}
+    >
+      <Icon name="quote" className="h-[1.125rem] w-[1.125rem]" />
+      {label}
+    </a>
+  );
+}
+
+/**
+ * @description Direct WhatsApp with the shared quote template.
+ * @param unit Unit to keep in the template.
+ * @param solid Filled green (mobile menu); default is outlined, so it never
+ *   outweighs "Solicitar cotización".
  */
 export function WhatsAppCta({
   place,
+  unit,
   label = 'Hablar por WhatsApp',
-  message = whatsappQuoteMessage,
+  solid = false,
   className = '',
   small = false,
-}: Base & { label?: string; message?: string }) {
-  const href = whatsappLink(message);
+}: Base & { unit?: UnitKey; label?: string; solid?: boolean }) {
+  const href = whatsappLink(quoteTemplate(unit));
   if (!href) return null;
   return (
     <a
@@ -34,9 +66,9 @@ export function WhatsAppCta({
       rel="noopener noreferrer"
       data-cta="whatsapp"
       data-cta-place={place}
-      className={`btn btn-whatsapp ${small ? 'btn-sm' : ''} ${className}`}
+      className={`btn ${solid ? 'btn-whatsapp' : 'btn-outline'} ${small ? 'btn-sm' : ''} ${className}`}
     >
-      <Icon name="whatsapp" className="h-[1.125rem] w-[1.125rem]" />
+      <Icon name="whatsapp" className={`h-[1.125rem] w-[1.125rem] ${solid ? '' : 'text-whatsapp'}`} />
       {label}
       <span className="sr-only"> (se abre en una ventana nueva)</span>
     </a>
@@ -44,27 +76,7 @@ export function WhatsAppCta({
 }
 
 /**
- * @description Secondary CTA: mail client with the tariff template.
- * @param label Button text.
- */
-export function EmailCta({ place, label = 'Cotizar por correo', className = '', small = false }: Base & { label?: string }) {
-  if (!contact.email) return null;
-  return (
-    <a
-      id={`cta-correo-${place}`}
-      href={quoteTemplateMailto(contact.email)}
-      data-cta="correo"
-      data-cta-place={place}
-      className={`btn btn-outline ${small ? 'btn-sm' : ''} ${className}`}
-    >
-      <Icon name="mail" className="h-[1.125rem] w-[1.125rem]" />
-      {label}
-    </a>
-  );
-}
-
-/**
- * @description Tertiary CTA: plain link to the primary phone.
+ * @description Additional option: plain link to the calls line.
  * @param prefix Visible text before the number, e.g. "o llama al".
  */
 export function PhoneLink({ place, prefix, className = '' }: Base & { prefix?: string }) {
@@ -85,62 +97,28 @@ export function PhoneLink({ place, prefix, className = '' }: Base & { prefix?: s
 }
 
 /**
- * @description Primary conversion CTA: jumps to "Cotiza tu transporte".
- * @param label Button text.
- * @param variant `primary` (copper) or `dark` (teal, for copper bands).
+ * @description The three options in order of weight, stacked on phones.
+ * @param unit Unit for the quote link and the WhatsApp template.
  */
-export function QuoteButton({
-  place,
-  label = 'Solicitar cotización',
-  variant = 'primary',
-  className = '',
-  small = false,
-}: Base & { label?: string; variant?: 'primary' | 'dark' }) {
-  if (!quoteHref) return null;
-  return (
-    <a
-      id={`cta-cotizar-${place}`}
-      href={quoteHref}
-      data-cta="cotizar"
-      data-cta-place={place}
-      className={`btn btn-${variant} ${small ? 'btn-sm' : ''} ${className}`}
-    >
-      <Icon name="quote" className="h-[1.125rem] w-[1.125rem]" />
-      {label}
-    </a>
-  );
-}
-
-/**
- * @description "Solicitar cotización", WhatsApp, then phone, stacked on phones.
- * @param whatsappMessage Equipment-specific WhatsApp template.
- */
-export function CtaGroup({ place, whatsappMessage, className = '' }: Base & { whatsappMessage?: string }) {
-  if (!contact.whatsapp && !contact.email && !contact.phone) return null;
+export function CtaGroup({ place, unit, className = '' }: Base & { unit?: UnitKey }) {
+  if (!hasContactSection) return null;
   return (
     <div className={`flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center ${className}`}>
-      <QuoteButton place={place} />
-      <WhatsAppCta place={place} message={whatsappMessage} />
+      <QuoteButton place={place} unit={unit} />
+      <WhatsAppCta place={place} unit={unit} />
       <PhoneLink place={place} prefix="o llama al" className="justify-center text-[var(--fg-strong)] sm:justify-start" />
     </div>
   );
 }
 
 /**
- * @description Full contact list in fixed order: primary phone, secondary
- * phone, WhatsApp, e-mail.
+ * @description Contact list, each line labelled with its function:
+ * Llamadas, WhatsApp, Correo.
  */
 export function ContactList({ place, className = '' }: Base) {
-  const wa = whatsappLink(whatsappQuoteMessage);
+  const wa = whatsappLink(quoteTemplate());
   const rows = [
-    contact.phone && { key: 'telefono', title: 'Teléfono', href: `tel:${contact.phone.tel}`, text: contact.phone.display, icon: 'phone' as const },
-    contact.phoneSecondary && {
-      key: 'telefono-alterno',
-      title: 'Teléfono alterno',
-      href: `tel:${contact.phoneSecondary.tel}`,
-      text: contact.phoneSecondary.display,
-      icon: 'phone' as const,
-    },
+    contact.phone && { key: 'telefono', title: 'Llamadas', href: `tel:${contact.phone.tel}`, text: contact.phone.display, icon: 'phone' as const },
     wa && contact.whatsapp && { key: 'whatsapp', title: 'WhatsApp', href: wa, text: contact.whatsapp.display, icon: 'whatsapp' as const, external: true },
     contact.email && { key: 'correo', title: 'Correo', href: quoteTemplateMailto(contact.email), text: contact.email, icon: 'mail' as const },
   ].filter((row) => !!row);
@@ -158,7 +136,7 @@ export function ContactList({ place, className = '' }: Base) {
               data-cta={row.key}
               data-cta-place={place}
               {...('external' in row ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-              className="inline-flex min-h-8 items-center gap-2 font-semibold break-all text-[var(--fg-strong)]"
+              className="inline-flex min-h-8 items-center gap-2 font-semibold break-words text-[var(--fg-strong)]"
             >
               <Icon name={row.icon} className="h-4 w-4 shrink-0 text-[var(--accent)]" />
               {row.text}

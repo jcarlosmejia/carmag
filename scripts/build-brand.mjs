@@ -211,7 +211,7 @@ export const DESCRIPTOR_PATH = '${descriptor}';
 
   // OpenGraph 1200×630: lockup, red rule, outlined tagline.
   const tagline = tracedText(font(600), 'Transporte de carga y fletes desde Guadalajara', 96, 446, 40);
-  const equipmentLine = tracedText(font(600), "Caja seca 53'  ·  Plataforma 40'  ·  Pacífico, Norte y Bajío", 96, 506, 28);
+  const equipmentLine = tracedText(font(600), "Caja seca 53'  ·  Planas 40' en adelante  ·  Pacífico, Norte y Bajío", 96, 506, 28);
   const og = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
 <rect width="1200" height="630" fill="${TEAL}"/>
 <rect x="40" y="0" width="6" height="630" fill="${COPPER}"/>

@@ -38,8 +38,7 @@ export function HomeStructuredData() {
   if (contact.email) organization.email = contact.email;
   if (contact.phone) organization.telephone = contact.phone.tel;
   const points = [
-    contact.phone && { telephone: contact.phone.tel, description: 'Teléfono principal' },
-    contact.phoneSecondary && { telephone: contact.phoneSecondary.tel, description: 'Teléfono secundario' },
+    contact.phone && { telephone: contact.phone.tel, description: 'Llamadas' },
     contact.whatsapp && { telephone: `+${contact.whatsapp.digits}`, description: 'WhatsApp' },
   ].filter((p) => !!p);
   if (points.length) {

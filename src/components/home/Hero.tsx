@@ -1,12 +1,10 @@
-import { company, contact, whatsappLink } from '@/data/company';
-import { figures, hero } from '@/data/content';
+import { company } from '@/data/company';
+import { hero } from '@/data/content';
 import { equipment } from '@/data/equipment';
 import { slotImages } from '@/data/imageManifest';
 import { hasContactSection } from '@/data/navigation';
-import { PhoneLink, QuoteButton } from '@/components/ui/Cta';
-import { Icon } from '@/components/ui/Icon';
+import { PhoneLink, QuoteButton, WhatsAppCta } from '@/components/ui/Cta';
 import { ArtDirectedPhoto } from '@/components/ui/Photo';
-import { whatsappQuoteMessage } from '@/lib/quote';
 import { EquipmentDiagram } from './EquipmentDiagram';
 
 const heroDesktop = slotImages.hero;
@@ -15,14 +13,13 @@ export const heroPhotos = heroDesktop && heroMobile ? { desktop: heroDesktop, mo
 
 /**
  * @description Dark teal hero: what CARMAG moves, with what, from where, and
- * how to ask for a rate. Primary CTA "Solicitar cotización", secondary
- * "Conocer servicios", then WhatsApp and phone as a quieter line. The photo
+ * how to ask for a rate. "Solicitar cotización" first, WhatsApp directo as
+ * the outlined alternative, the calls line as a plain link. The photo
  * column falls back to the equipment diagrams when no hero photo exists.
  */
 export function Hero() {
-  const wa = whatsappLink(whatsappQuoteMessage);
   return (
-    <section id="inicio" className="section pb-0" aria-labelledby="inicio-titulo">
+    <section id="inicio" className="section" aria-labelledby="inicio-titulo">
       <div className="shell grid items-center gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-14">
         <div>
           <p className="eyebrow">{hero.overline}</p>
@@ -31,40 +28,22 @@ export function Hero() {
           </h1>
           <p className="lede mt-6">{hero.lede}</p>
 
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            {hasContactSection ? <QuoteButton place="hero" /> : null}
-            <a id="hero-servicios" href="#servicios" className="btn btn-outline">
-              Conocer servicios
-            </a>
-          </div>
-
-          {wa || contact.phone ? (
-            <p className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-1 text-sm text-gray-light">
-              {wa ? (
-                <a id="hero-whatsapp" href={wa} target="_blank" rel="noopener noreferrer" data-cta="whatsapp" data-cta-place="hero" className="inline-flex min-h-11 items-center gap-2 font-semibold text-white">
-                  <Icon name="whatsapp" className="h-[1.125rem] w-[1.125rem] text-whatsapp" />
-                  Hablar por WhatsApp
-                  <span className="sr-only"> (se abre en una ventana nueva)</span>
-                </a>
-              ) : null}
-              <PhoneLink place="hero" prefix="o llama al" className="text-white" />
-            </p>
+          {hasContactSection ? (
+            <>
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <QuoteButton place="hero" />
+                <WhatsAppCta place="hero" />
+              </div>
+              <PhoneLink place="hero" prefix="Llamadas:" className="mt-3 text-white" />
+            </>
           ) : null}
-
-          <ul aria-label="Capacidades" className="mt-7 flex flex-wrap gap-2">
-            {hero.chips.map((chip) => (
-              <li key={chip} className="border border-teal-border bg-teal-surface px-3 py-1.5 text-[0.8125rem] font-semibold text-white">
-                {chip}
-              </li>
-            ))}
-          </ul>
         </div>
 
         {heroPhotos ? (
           <figure className="relative border-l-[6px] border-copper">
             <ArtDirectedPhoto desktop={heroPhotos.desktop} mobile={heroPhotos.mobile} />
             <figcaption className="absolute bottom-0 left-0 bg-teal/90 px-4 py-2.5 text-[0.8125rem] font-semibold text-white">
-              Caja seca 53&prime; · Plataforma 40&prime; · Base en {company.baseCity}
+              Caja seca 53&prime; · Planas de 40&prime; en adelante · Base en {company.baseCity}
             </figcaption>
           </figure>
         ) : (
@@ -79,17 +58,6 @@ export function Hero() {
             </div>
           </div>
         )}
-      </div>
-
-      <div className="shell mt-14 pb-14 lg:mt-20 lg:pb-20">
-        <dl aria-label="CARMAG en cifras" className="spec-grid grid-cols-2 lg:grid-cols-4">
-          {figures.map((f) => (
-            <div key={f.label} className="flex flex-col-reverse gap-1 px-5 py-6 lg:py-8">
-              <dt className="label-tech">{f.label}</dt>
-              <dd className="text-4xl font-black text-white lg:text-5xl">{f.value}</dd>
-            </div>
-          ))}
-        </dl>
       </div>
     </section>
   );

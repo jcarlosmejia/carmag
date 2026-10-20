@@ -1,23 +1,29 @@
 /**
- * @description Equipment data: drives the home equipment cards and the two
- * service pages (`/[servicio]/`). Only confirmed configurations: 53' dry van
- * and 40' flatbed. No weights, axles or 48' units until confirmed.
+ * @description Equipment data: drives the home comparison and the two
+ * service pages (`/[servicio]/`). Owner-confirmed offer: caja seca de 53 pies
+ * and planas de 40 pies en adelante (correction 2026-10-20). No weights, axles
+ * or other lengths are published; configuration is confirmed when quoting.
+ *
+ * The flatbed URL stays `/plataforma-40-pies/` so existing links keep working.
  */
 
 import type { ImageSlot } from './imageManifest';
+import type { UnitKey } from '@/lib/quote';
 
 export type Equipment = {
   slug: 'caja-seca-53-pies' | 'plataforma-40-pies';
+  /** Preselected in the quote form when coming from this page. */
+  unit: UnitKey;
   imageSlot: ImageSlot;
   short: string;
   name: string;
   kicker: string;
-  /** Length in feet and its metric conversion. */
-  length: { ft: number; m: string };
+  /** Length as published, used by the fallback diagram. */
+  lengthLabel: string;
   summary: string;
   idealFor: readonly string[];
-  handling: readonly string[];
-  whatsappMessage: string;
+  /** Conditions and restrictions shown next to the unit. */
+  conditions: readonly string[];
   linkLabel: string;
   page: {
     metaTitle: string;
@@ -34,27 +40,15 @@ export type Equipment = {
 export const equipment: readonly Equipment[] = [
   {
     slug: 'caja-seca-53-pies',
+    unit: 'caja-seca-53',
     imageSlot: 'caja-seca',
     short: "Caja seca 53'",
     name: 'Caja seca de 53 pies',
     kicker: 'Carga general protegida',
-    length: { ft: 53, m: '16.15' },
-    summary:
-      'Caja cerrada para carga general no refrigerada: tu mercancía viaja protegida de la lluvia, el polvo y el sol.',
-    idealFor: [
-      'Producto terminado y mercancía empacada',
-      'Carga paletizada',
-      'Bienes de consumo',
-      'Alimentos que no requieren refrigeración',
-      'Abastecimiento a almacenes y centros de distribución',
-    ],
-    handling: [
-      'Carga y descarga por la puerta trasera, en andén o con montacargas.',
-      'Carga completa: la unidad viaja solo con tu embarque.',
-      'Para carga seca; no ofrecemos servicio refrigerado.',
-    ],
-    whatsappMessage:
-      'Hola, quiero cotizar un flete en caja seca de 53 pies.\nOrigen: \nDestino: \nTipo de carga: \nFecha de carga: ',
+    lengthLabel: '53 pies · 16.15 m',
+    summary: 'Caja cerrada para carga general no refrigerada: la mercancía viaja protegida de la lluvia, el polvo y el sol.',
+    idealFor: ['Producto terminado y mercancía empacada', 'Carga en tarimas', 'Bienes de consumo y alimentos no perecederos', 'Abastecimiento a almacenes y CEDIS'],
+    conditions: ['Carga seca: sin servicio refrigerado.', 'Carga y descarga por la puerta trasera, en andén o con montacargas.'],
     linkLabel: "Ver fletes en caja seca 53'",
     page: {
       metaTitle: 'Caja Seca de 53 Pies en Guadalajara',
@@ -99,41 +93,31 @@ export const equipment: readonly Equipment[] = [
         },
         {
           q: '¿Cómo cotizo un flete en caja seca?',
-          a: 'Envíanos origen, destino y tipo de carga. Con peso, dimensiones y fecha de carga la tarifa sale más precisa.',
+          a: 'Usa el formulario de cotización: la caja seca queda seleccionada y solo necesitas origen, destino y mercancía. Con peso, medidas y fecha la tarifa sale más precisa.',
         },
       ],
     },
   },
   {
     slug: 'plataforma-40-pies',
+    unit: 'planas-40',
     imageSlot: 'plataforma',
-    short: "Plataforma 40'",
-    name: 'Plataforma de 40 pies',
+    short: "Planas 40' en adelante",
+    name: 'Planas de 40 pies en adelante',
     kicker: 'Carga industrial',
-    length: { ft: 40, m: '12.2' },
+    lengthLabel: '40 pies en adelante',
     summary:
-      'Plataforma abierta para carga industrial, materiales y maquinaria que se cargan por los costados o desde arriba.',
-    idealFor: [
-      'Acero y productos metálicos',
-      'Materiales de construcción',
-      'Maquinaria y equipo industrial',
-      'Estructuras y piezas de gran formato dentro de medidas permitidas',
-    ],
-    handling: [
-      'Carga y descarga lateral o desde arriba, con montacargas o grúa.',
-      'Planeamos contigo la maniobra antes del día de carga.',
-      'Sin servicios de sobredimensión ni sobrepeso.',
-    ],
-    whatsappMessage:
-      'Hola, quiero cotizar un flete en plataforma de 40 pies.\nOrigen: \nDestino: \nTipo de carga: \nPeso y dimensiones: ',
-    linkLabel: "Ver fletes en plataforma 40'",
+      'Plataformas abiertas de 40 pies en adelante para carga industrial, materiales y maquinaria que se cargan por los costados o desde arriba. La longitud y configuración se confirman al cotizar.',
+    idealFor: ['Acero y productos metálicos', 'Materiales de construcción', 'Maquinaria y equipo industrial', 'Estructuras dentro de medidas permitidas'],
+    conditions: ['Sin sobredimensión ni sobrepeso.', 'Carga lateral o desde arriba, con montacargas o grúa.'],
+    linkLabel: "Ver fletes en planas de 40' en adelante",
     page: {
-      metaTitle: 'Transporte en Plataforma de 40 Pies en Guadalajara',
+      metaTitle: 'Planas de 40 Pies en Adelante en Guadalajara',
       description:
-        'Transporte en plataforma de 40 pies desde Guadalajara para acero, materiales de construcción, maquinaria y carga industrial. Servicio spot, recurrente o dedicado.',
-      breadcrumb: "Plataforma 40'",
-      h1: 'Transporte en plataforma de 40 pies desde Guadalajara',
-      lede: 'Fletes de carga industrial en plataforma abierta de 40 pies, con salida desde la Zona Metropolitana de Guadalajara hacia el Pacífico, el Norte, el Bajío y otros destinos de México.',
+        'Transporte en planas de 40 pies en adelante desde Guadalajara para acero, materiales de construcción, maquinaria y carga industrial. Servicio spot, recurrente o dedicado.',
+      breadcrumb: "Planas 40' en adelante",
+      h1: 'Transporte en planas de 40 pies en adelante desde Guadalajara',
+      lede: 'Fletes de carga industrial en plataformas abiertas de 40 pies en adelante, con salida desde la Zona Metropolitana de Guadalajara hacia el Pacífico, el Norte, el Bajío y otros destinos de México.',
       whatWeMove: [
         'Acero, perfiles, lámina y productos metálicos',
         'Materiales de construcción',
@@ -144,7 +128,7 @@ export const equipment: readonly Equipment[] = [
       howWeOperate: [
         {
           title: 'Revisamos peso y dimensiones',
-          body: 'Con el peso, las medidas y la forma de la carga confirmamos que viaje en plataforma de 40 pies dentro de lo permitido.',
+          body: 'Con el peso, las medidas y la forma de la carga definimos la plana adecuada y confirmamos que viaje dentro de lo permitido.',
         },
         {
           title: 'Planeamos la maniobra',
@@ -152,7 +136,7 @@ export const equipment: readonly Equipment[] = [
         },
         {
           title: 'Carga completa a destino',
-          body: 'La plataforma viaja solo con tu embarque, de origen a destino.',
+          body: 'La plana viaja solo con tu embarque, de origen a destino.',
         },
         {
           title: 'Spot, recurrente o dedicado',
@@ -161,16 +145,16 @@ export const equipment: readonly Equipment[] = [
       ],
       faqs: [
         {
-          q: '¿Cuánto peso lleva una plataforma de 40 pies?',
+          q: '¿De qué longitud son las planas?',
+          a: 'Trabajamos con planas de 40 pies en adelante. La longitud y la configuración de la unidad se confirman al cotizar, según las medidas y el peso de tu carga.',
+        },
+        {
+          q: '¿Cuánto peso lleva una plana?',
           a: 'Depende de la configuración de la unidad, de las dimensiones y el peso de la carga, y de las condiciones de la ruta. No publicamos una cifra única: te confirmamos el límite específico al cotizar.',
         },
         {
           q: '¿Mueven carga sobredimensionada?',
           a: 'No ofrecemos servicios de sobredimensión ni sobrepeso. La carga debe viajar dentro de las medidas y el peso permitidos.',
-        },
-        {
-          q: '¿Quién hace la maniobra de carga?',
-          a: 'La definimos contigo al cotizar: qué equipo se usa en origen y en destino, y cómo se coloca la carga sobre la plataforma.',
         },
       ],
     },

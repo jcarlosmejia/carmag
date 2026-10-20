@@ -1,63 +1,71 @@
 /**
- * @description Quote request shape, validation and message formatting.
+ * @description Quote request: fields, validation and message formatting.
  *
- * No backend: the form validates in the browser and hands a formatted message
- * to the visitor's mail client via `mailto:`. Nothing is stored and no
- * third-party form service is used.
+ * No backend. The form builds a WhatsApp message and opens WhatsApp; the
+ * visitor sends it. Nothing is stored, put in the URL or sent to analytics.
+ * The only value allowed in a URL is the unit preselection (`?unidad=`).
+ *
+ * Pure module with no imports, so `node --test` can load it directly.
  */
 
+export const UNIT_OPTIONS = [
+  { value: 'caja-seca-53', label: 'Caja seca de 53 pies' },
+  { value: 'planas-40', label: 'Planas de 40 pies en adelante' },
+  { value: 'orientacion', label: 'Necesito orientación' },
+] as const;
+
+export type UnitKey = (typeof UNIT_OPTIONS)[number]['value'];
+
+const unitLabel = (unit: UnitKey | '') => UNIT_OPTIONS.find((o) => o.value === unit)?.label ?? '';
+
 export type QuoteFields = {
-  nombre: string;
-  empresa: string;
-  telefono: string;
-  email: string;
   origen: string;
   destino: string;
-  carga: string;
-  peso: string;
-  dimensiones: string;
+  mercancia: string;
+  unidad: UnitKey | '';
   fecha: string;
-  unidad: string;
-  operacion: string;
-  detalles: string;
+  peso: string;
+  largo: string;
+  ancho: string;
+  alto: string;
+  observaciones: string;
 };
 
 export const emptyQuote: QuoteFields = {
-  nombre: '',
-  empresa: '',
-  telefono: '',
-  email: '',
   origen: '',
   destino: '',
-  carga: '',
-  peso: '',
-  dimensiones: '',
-  fecha: '',
+  mercancia: '',
   unidad: '',
-  operacion: '',
-  detalles: '',
+  fecha: '',
+  peso: '',
+  largo: '',
+  ancho: '',
+  alto: '',
+  observaciones: '',
 };
 
-export const requiredFields = ['nombre', 'telefono', 'origen', 'destino', 'carga'] as const;
+export const requiredFields = ['origen', 'destino', 'mercancia'] as const;
 
 export type QuoteErrors = Partial<Record<keyof QuoteFields, string>>;
 
-export const unidadOptions = [
-  { value: '', label: 'Selecciona una opción' },
-  { value: "Caja seca 53'", label: "Caja seca 53'" },
-  { value: "Plataforma 40'", label: "Plataforma 40'" },
-  { value: 'No estoy seguro', label: 'No estoy seguro' },
-] as const;
+/**
+ * Kilograms: "18,000" and "18 000" are thousands separators (Mexican usage).
+ * Metres: "2,4" is a decimal comma.
+ */
+const normalize = (key: keyof QuoteFields, value: string) =>
+  key === 'peso' ? value.trim().replace(/[,\s]/g, '') : value.trim().replace(',', '.');
 
-export const operacionOptions = [
-  { value: '', label: 'Selecciona una opción' },
-  { value: 'Spot', label: 'Spot (viaje único)' },
-  { value: 'Recurrente', label: 'Recurrente' },
-  { value: 'Dedicado', label: 'Dedicado' },
-] as const;
+/** Returns NaN for anything that is not a plain positive decimal. */
+function toNumber(value: string): number {
+  return /^\d+(\.\d+)?$/.test(value) ? Number(value) : Number.NaN;
+}
 
-/** Catches typos, not an RFC 5322 parser. */
-const EMAIL_RE = /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$/;
+const NUMERIC: readonly [keyof QuoteFields, string][] = [
+  ['peso', 'Escribe el peso en kilogramos, solo con números. Ej. 18000.'],
+  ['largo', 'Escribe el largo en metros. Ej. 12.5'],
+  ['ancho', 'Escribe el ancho en metros. Ej. 2.4'],
+  ['alto', 'Escribe el alto en metros. Ej. 1.8'],
+];
 
 /**
  * @description Validates a quote request.
@@ -66,82 +74,110 @@ const EMAIL_RE = /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$/;
  */
 export function validateQuote(fields: QuoteFields): QuoteErrors {
   const errors: QuoteErrors = {};
-  const digits = fields.telefono.replace(/\D/g, '').length;
-
-  if (!fields.nombre.trim()) errors.nombre = 'Escribe tu nombre.';
-  if (!fields.telefono.trim()) errors.telefono = 'Escribe un teléfono para darte respuesta.';
-  else if (digits < 10 || digits > 15) errors.telefono = 'Escribe el teléfono a 10 dígitos (o con clave de país).';
-  if (fields.email.trim() && !EMAIL_RE.test(fields.email.trim())) errors.email = 'Revisa el correo: parece incompleto.';
   if (!fields.origen.trim()) errors.origen = 'Escribe la ciudad de origen.';
   if (!fields.destino.trim()) errors.destino = 'Escribe la ciudad de destino.';
-  if (!fields.carga.trim()) errors.carga = 'Describe el tipo de carga.';
-
+  if (!fields.mercancia.trim()) errors.mercancia = 'Describe el tipo de mercancía.';
+  for (const [key, message] of NUMERIC) {
+    const value = fields[key].trim();
+    if (value && !(toNumber(normalize(key, value)) > 0)) errors[key] = message;
+  }
   return errors;
 }
 
-const MESSAGE_ROWS: readonly [keyof QuoteFields, string][] = [
-  ['nombre', 'Nombre'],
-  ['empresa', 'Empresa'],
-  ['telefono', 'Teléfono'],
-  ['email', 'Correo'],
-  ['origen', 'Origen'],
-  ['destino', 'Destino'],
-  ['carga', 'Tipo de carga'],
-  ['peso', 'Peso aproximado'],
-  ['dimensiones', 'Dimensiones'],
-  ['fecha', 'Fecha de carga'],
-  ['unidad', 'Tipo de unidad'],
-  ['operacion', 'Operación'],
-  ['detalles', 'Detalles'],
-];
+const INTRO = 'Hola, quiero cotizar un transporte con CARMAG TRANSPORTS.';
+
+/** "2026-10-25" → "25/10/2026". */
+const formatDate = (iso: string) => {
+  const [y, m, d] = iso.split('-');
+  return y && m && d ? `${d}/${m}/${y}` : iso;
+};
 
 /**
- * @description Formats a quote request as plain text; empty fields are omitted.
+ * @description Formats a completed request; empty optional fields are left out.
  * @param fields Validated form values.
- * @returns The message body.
+ * @returns Plain-text message (newlines kept; encode with `encodeURIComponent`).
  */
 export function buildQuoteMessage(fields: QuoteFields): string {
-  const rows = MESSAGE_ROWS.flatMap(([key, label]) => {
-    const value = fields[key].trim();
-    return value ? [`${label}: ${value}`] : [];
-  });
-  return ['Hola, quiero solicitar una cotización de transporte con CARMAG TRANSPORTS.', '', ...rows].join('\n');
+  const dims = (['largo', 'ancho', 'alto'] as const)
+    .filter((k) => fields[k].trim())
+    .map((k) => `${k} ${normalize(k, fields[k])} m`);
+  const rows: [string, string][] = [
+    ['Origen', fields.origen.trim()],
+    ['Destino', fields.destino.trim()],
+    ['Mercancía', fields.mercancia.trim()],
+    ['Unidad', unitLabel(fields.unidad)],
+    ['Fecha estimada', fields.fecha ? formatDate(fields.fecha) : ''],
+    ['Peso aproximado', fields.peso.trim() ? `${normalize('peso', fields.peso)} kg` : ''],
+    ['Dimensiones', dims.join(' × ')],
+    ['Observaciones', fields.observaciones.trim()],
+  ];
+  return [INTRO, '', ...rows.filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`)].join('\n');
 }
 
-/** Prefilled text for every generic WhatsApp CTA. */
-export const whatsappQuoteMessage = 'Hola, quiero solicitar una cotización de transporte.\nOrigen: \nDestino: \nTipo de carga: ';
+/**
+ * @description Blank template used by every direct WhatsApp and e-mail link,
+ * so all of them ask for the same data. Keeps the unit when one is known.
+ * @param unit Unit to prefill.
+ * @returns Plain-text template.
+ */
+export function quoteTemplate(unit?: UnitKey): string {
+  return [
+    INTRO,
+    '',
+    'Origen: ',
+    'Destino: ',
+    'Mercancía: ',
+    `Unidad: ${unit ? unitLabel(unit) : ''}`,
+    'Fecha estimada: ',
+    'Peso aproximado (kg): ',
+    'Dimensiones (largo × ancho × alto, en metros): ',
+  ].join('\n');
+}
 
-export const quoteEmailSubject = 'Solicitud de tarifa de transporte';
+/** Generic WhatsApp template (no unit). */
+export const whatsappQuoteMessage = quoteTemplate();
 
-const EMAIL_TEMPLATE = [
-  'Hola, quiero solicitar una tarifa de transporte con CARMAG TRANSPORTS.',
-  '',
-  'Origen:',
-  'Destino:',
-  'Mercancía:',
-  'Peso aproximado:',
-  'Dimensiones:',
-  'Fecha de carga:',
-  "Tipo de unidad (caja seca 53' / plataforma 40'):",
-].join('\n');
+export const quoteEmailSubject = 'Solicitud de cotización de transporte';
 
-/** `URLSearchParams` encodes spaces as "+", which mail clients show literally. */
-function mailto(email: string, body: string): string {
-  const params = new URLSearchParams({ subject: quoteEmailSubject, body });
+/**
+ * @description `mailto:` with the shared template. `URLSearchParams` writes
+ * spaces as "+", which mail clients show literally, so they become %20.
+ * @param email Destination mailbox.
+ * @param unit Unit to prefill.
+ */
+export function quoteTemplateMailto(email: string, unit?: UnitKey): string {
+  const params = new URLSearchParams({ subject: quoteEmailSubject, body: quoteTemplate(unit) });
   return `mailto:${email}?${params.toString().replace(/\+/g, '%20')}`;
 }
 
 /**
- * @description `mailto:` with the blank tariff template.
- * @param email Destination mailbox.
- * @returns The `mailto:` URL.
+ * @description Reads the unit preselection from a query string.
+ * @param search `location.search`, e.g. "?unidad=planas-40".
+ * @returns A known unit key, or '' for anything else.
  */
-export const quoteTemplateMailto = (email: string) => mailto(email, EMAIL_TEMPLATE);
+export function unitFromSearch(search: string): UnitKey | '' {
+  const value = new URLSearchParams(search).get('unidad');
+  return UNIT_OPTIONS.some((o) => o.value === value) ? (value as UnitKey) : '';
+}
 
 /**
- * @description `mailto:` carrying a completed quote request.
- * @param email Destination mailbox.
- * @param fields Validated form values.
- * @returns The `mailto:` URL.
+ * @description Link to the quote form, optionally with the unit preselected.
+ * Only the unit travels in the URL, never the captured data.
  */
-export const quoteMailto = (email: string, fields: QuoteFields) => mailto(email, buildQuoteMessage(fields));
+export const quoteHrefFor = (unit?: UnitKey) => (unit ? `/?unidad=${unit}#cotizar` : '/#cotizar');
+
+/**
+ * @description Copies text for the "WhatsApp no abrió" fallback.
+ * @param text Message to copy.
+ * @param clipboard Clipboard API (injected so it can be tested).
+ * @returns `true` when copied; `false` when the browser refused.
+ */
+export async function copyText(text: string, clipboard: Pick<Clipboard, 'writeText'> | undefined): Promise<boolean> {
+  try {
+    if (!clipboard) return false;
+    await clipboard.writeText(text);
+    return true;
+  } catch {
+    return false;
+  }
+}

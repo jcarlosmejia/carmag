@@ -21,6 +21,8 @@ const review = process.env.NEXT_PUBLIC_CARMAG_REVIEW === '1';
 const FORBIDDEN = ['Lorem', 'undefined', 'NaN'];
 /** Previous brand. `\b` keeps Spanish words such as "promover" out of it. */
 const LEGACY_BRAND = /\bromo/i;
+/** Owner correction 2026-10-20: the flatbed offer is "40 pies en adelante". */
+const OLD_FLATBED = /plataformas? (?:de )?40 pies(?! en adelante)|plataforma 40'(?!\+| en adelante)/i;
 
 const errors = [];
 const fail = (page, msg) => errors.push(`${page}: ${msg}`);
@@ -84,6 +86,7 @@ for (const { route, html } of pages) {
   // Visible text plus attribute values, without the RSC payload scripts.
   const markup = html.replace(/<script[\s\S]*?<\/script>/g, '');
   for (const word of FORBIDDEN) if (markup.includes(word)) fail(route, `contains "${word}"`);
+  if (OLD_FLATBED.test(markup)) fail(route, `old flatbed wording: "${markup.match(OLD_FLATBED)?.[0]}"`);
   if (LEGACY_BRAND.test(html)) fail(route, `contains previous brand: "${html.match(/.{0,30}\bromo.{0,30}/i)?.[0]}"`);
 
   for (const [, raw] of markup.matchAll(/\s(?:href|src)="([^"]+)"/g)) {

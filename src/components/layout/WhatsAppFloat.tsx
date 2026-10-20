@@ -5,8 +5,9 @@ import { whatsappLink } from '@/data/company';
 import { Icon } from '@/components/ui/Icon';
 
 /**
- * @description The site's only floating element. Hidden while the contact
- * section or the final CTA is on screen, so it never covers the CTAs there.
+ * @description The site's only floating element. Hidden while the hero, the
+ * quote form or the final CTA is on screen: each has its own WhatsApp link,
+ * and on narrow phones the float would otherwise cover those controls.
  * @param message Prefilled WhatsApp text.
  */
 export function WhatsAppFloat({ message }: { message: string }) {
@@ -14,7 +15,7 @@ export function WhatsAppFloat({ message }: { message: string }) {
   const href = whatsappLink(message);
 
   useEffect(() => {
-    const targets = ['cotizar', 'cta-final'].map((id) => document.getElementById(id)).filter((el): el is HTMLElement => el !== null);
+    const targets = ['inicio', 'servicio-inicio', 'cotizar', 'cta-final'].map((id) => document.getElementById(id)).filter((el): el is HTMLElement => el !== null);
     if (!targets.length || typeof IntersectionObserver === 'undefined') return;
     const visible = new Set<Element>();
     const observer = new IntersectionObserver((entries) => {

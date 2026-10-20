@@ -16,9 +16,9 @@ en `null` o con `confirmed: false`, y la interfaz lo oculta: nunca se muestra
 un marcador, un número de ejemplo ni una suposición. Lo pendiente está en
 `docs/content-verification.md` (generado con `npm run docs`).
 
-Teléfono, WhatsApp y correo están autorizados y publicados. El formulario y el
-aviso de privacidad siguen ocultos hasta confirmar razón social y domicilio.
-Para revisar el formulario sin publicarlo:
+Llamadas, WhatsApp y correo están autorizados y publicados. El aviso de
+privacidad sigue oculto hasta confirmar razón social y domicilio. Para una
+compilación de revisión (con `noindex`):
 
 ```bash
 NEXT_PUBLIC_CARMAG_REVIEW=1 npm run build
@@ -50,9 +50,17 @@ Cada sección tiene un espacio (`hero`, `hero-mobile`, `caja-seca`,
 
 ## Formulario
 
-No hay backend. El formulario valida en el navegador y abre el programa de
-correo del visitante (`mailto:`). Para cambiarlo por una Cloudflare Function,
-solo se reemplaza `onSubmit` en `src/components/home/QuoteForm.tsx`.
+No hay backend. El formulario de `#cotizar` valida en el navegador, arma un
+mensaje y abre WhatsApp; el visitante lo envía. No pide nombre, correo ni
+teléfono, y no guarda nada en almacenamiento, URL ni analítica. Solo la unidad
+viaja en la URL (`/?unidad=caja-seca-53#cotizar`, `/?unidad=planas-40#cotizar`)
+desde las páginas de equipo. Lógica y pruebas: `src/lib/quote.ts` y
+`src/lib/quote.test.ts` (`npm test`).
+
+Analítica: los clics en `[data-cta]` y la apertura de WhatsApp desde el
+formulario (`whatsapp-formulario`) emiten `carmag:cta` y `cta_click` en
+Cloudflare Zaraz si está activo. Solo nombre y ubicación del botón; el sitio no
+puede saber si el mensaje se envió.
 
 ## Lanzamiento
 
