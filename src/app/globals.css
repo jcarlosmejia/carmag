@@ -409,16 +409,10 @@
     background-color: var(--color-whatsapp);
     color: #ffffff;
     box-shadow: 0 6px 20px rgb(0 0 0 / 35%);
-    transition:
-      opacity 0.2s var(--ease-industrial),
-      background-color 0.2s var(--ease-industrial);
+    transition: background-color 0.2s var(--ease-industrial);
   }
   .whatsapp-float:hover {
     background-color: var(--color-whatsapp-dark);
-  }
-  .whatsapp-float[data-hidden='true'] {
-    opacity: 0;
-    pointer-events: none;
   }
   @media (min-width: 64rem) {
     .whatsapp-float {
