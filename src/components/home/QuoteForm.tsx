@@ -85,10 +85,10 @@ export function QuoteForm() {
 
   return (
     <form id="formulario-cotizacion" onSubmit={onSubmit} noValidate aria-describedby="cotizar-nota">
-      <div ref={summaryRef} tabIndex={-1} className={errorKeys.length ? 'mb-6 border-l-4 border-red bg-paper p-4' : 'sr-only'}>
+      <div ref={summaryRef} tabIndex={-1} className={errorKeys.length ? 'mb-6 border-l-4 border-[var(--error)] bg-paper p-4' : 'sr-only'}>
         {errorKeys.length ? (
           <>
-            <p role="alert" className="font-bold text-red">
+            <p role="alert" className="font-bold text-[var(--error)]">
               Revisa {errorKeys.length === 1 ? 'este dato' : `estos ${errorKeys.length} datos`}:
             </p>
             <ul className="mt-2 space-y-1 text-sm">
@@ -112,7 +112,7 @@ export function QuoteForm() {
             <div key={f.name} className={f.wide ? 'sm:col-span-2' : undefined}>
               <label htmlFor={id(f.name)} className="field-label">
                 {f.label}
-                {required ? <span className="text-red"> *</span> : <span className="font-normal text-steel-dark"> (opcional)</span>}
+                {required ? <span className="text-copper-deep"> *</span> : <span className="font-normal text-gray-dark"> (opcional)</span>}
               </label>
               <input
                 id={id(f.name)}
@@ -140,7 +140,7 @@ export function QuoteForm() {
         {SELECTS.map((s) => (
           <div key={s.name}>
             <label htmlFor={id(s.name)} className="field-label">
-              {s.label} <span className="font-normal text-steel-dark">(opcional)</span>
+              {s.label} <span className="font-normal text-gray-dark">(opcional)</span>
             </label>
             <select id={id(s.name)} name={s.name} value={fields[s.name]} onChange={(e) => update(s.name, e.target.value)} className="field-input">
               {s.options.map((o) => (
@@ -154,7 +154,7 @@ export function QuoteForm() {
 
         <div className="sm:col-span-2">
           <label htmlFor={id('detalles')} className="field-label">
-            Detalles <span className="font-normal text-steel-dark">(opcional)</span>
+            Detalles <span className="font-normal text-gray-dark">(opcional)</span>
           </label>
           <textarea
             id={id('detalles')}
@@ -168,8 +168,8 @@ export function QuoteForm() {
         </div>
       </div>
 
-      <p id="cotizar-nota" className="mt-5 text-xs text-steel-dark">
-        <span className="text-red">*</span> Datos necesarios para cotizar. Al enviar, se abre tu programa de correo con la solicitud lista.
+      <p id="cotizar-nota" className="mt-5 text-xs text-gray-dark">
+        <span className="text-copper-deep">*</span> Datos necesarios para cotizar. Al enviar, se abre tu programa de correo con la solicitud lista.
       </p>
 
       <button id="enviar-cotizacion" type="submit" data-cta="formulario" data-cta-place="contacto" className="btn btn-primary mt-6 w-full">
@@ -177,7 +177,7 @@ export function QuoteForm() {
         Solicitar cotización
       </button>
 
-      <div className="mt-5 space-y-2 text-sm text-steel-dark">
+      <div className="mt-5 space-y-2 text-sm text-gray-dark">
         {whatsapp ? (
           <p>
             ¿Prefieres respuesta inmediata?{' '}
@@ -196,7 +196,7 @@ export function QuoteForm() {
 
       <div aria-live="polite" className="mt-4">
         {opened ? (
-          <p className="flex gap-2.5 border-l-4 border-navy bg-paper p-4 text-sm">
+          <p className="flex gap-2.5 border-l-4 border-teal bg-paper p-4 text-sm">
             <Icon name="check" className="mt-0.5 h-5 w-5 shrink-0" />
             <span>
               Abrimos tu programa de correo con la solicitud. Envíala desde ahí para que la recibamos. Si no se abrió, escríbenos a{' '}

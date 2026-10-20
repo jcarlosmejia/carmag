@@ -56,7 +56,7 @@ export function Header() {
   }, [open]);
 
   return (
-    <header id="site-header" className="sticky top-0 z-50 border-b border-navy-border bg-navy/95 backdrop-blur-sm">
+    <header id="site-header" className="sticky top-0 z-50 border-b border-teal-border bg-teal/95 backdrop-blur-sm">
       <div className="shell flex h-[4.5rem] items-center justify-between gap-4">
         <Link id="header-logo" href="/" className="shrink-0 text-white" aria-label="CARMAG TRANSPORTS — inicio">
           <Logo className="h-8 w-auto sm:h-9" />
@@ -69,7 +69,7 @@ export function Header() {
                 <Link
                   id={`nav-${item.href.slice(2)}`}
                   href={item.href}
-                  className="block px-2.5 py-2 text-[0.8125rem] font-semibold text-steel-light transition-colors hover:text-white xl:px-3.5"
+                  className="block px-2.5 py-2 text-[0.8125rem] font-semibold text-gray-light transition-colors hover:text-white xl:px-3.5"
                 >
                   {item.label}
                 </Link>
@@ -83,7 +83,7 @@ export function Header() {
           <span className="hidden xl:block">
             <PhoneLink place="header" className="text-sm text-white" />
           </span>
-          <QuoteButton place="header" label="Cotizar" small className="hidden sm:inline-flex" />
+          <QuoteButton place="header" small className="hidden sm:inline-flex" />
           <button
             ref={toggleRef}
             id="menu-toggle"
@@ -101,11 +101,11 @@ export function Header() {
         </div>
       </div>
 
-      <div ref={drawerRef} id="menu-movil" hidden={!open} className="h-[calc(100dvh-4.5rem)] overflow-y-auto border-t border-navy-border bg-navy lg:hidden">
+      <div ref={drawerRef} id="menu-movil" hidden={!open} className="h-[calc(100dvh-4.5rem)] overflow-y-auto border-t border-teal-border bg-teal lg:hidden">
         <nav aria-label="Navegación principal (móvil)" className="shell py-4">
           <ul>
             {navItems.map((item) => (
-              <li key={item.href} className="border-b border-navy-border last:border-b-0">
+              <li key={item.href} className="border-b border-teal-border last:border-b-0">
                 <Link
                   id={`nav-movil-${item.href.slice(2)}`}
                   href={item.href}
@@ -113,13 +113,13 @@ export function Header() {
                   className="flex min-h-[3.25rem] items-center justify-between font-semibold text-white"
                 >
                   {item.label}
-                  <Icon name="arrow" className="h-4 w-4 text-steel-light" />
+                  <Icon name="arrow" className="h-4 w-4 text-gray-light" />
                 </Link>
               </li>
             ))}
           </ul>
           <div className="mt-6 flex flex-col gap-3">
-            <WhatsAppCta place="menu-movil" label="Cotizar por WhatsApp" className="w-full" />
+            <WhatsAppCta place="menu-movil" className="w-full" />
             <QuoteButton place="menu-movil" className="w-full" />
             <PhoneLink place="menu-movil" prefix="Llamar al" className="justify-center text-white" />
           </div>

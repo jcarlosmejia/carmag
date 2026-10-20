@@ -54,7 +54,7 @@ export default async function ServicePage({ params }: Props) {
         <section className="section" aria-labelledby="servicio-titulo">
           <div className="shell">
             <nav aria-label="Ruta de navegación">
-              <ol className="flex flex-wrap items-center gap-2 text-sm text-steel-light">
+              <ol className="flex flex-wrap items-center gap-2 text-sm text-gray-light">
                 <li>
                   <Link id="migas-inicio" href="/" className="hover:text-white">
                     Inicio
@@ -75,7 +75,7 @@ export default async function ServicePage({ params }: Props) {
 
             <div className="mt-10 grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
               <div>
-                <p className="overline">{item.kicker}</p>
+                <p className="eyebrow">{item.kicker}</p>
                 <h1 id="servicio-titulo" className="display-hero mt-4">
                   {item.page.h1}
                 </h1>
@@ -83,11 +83,11 @@ export default async function ServicePage({ params }: Props) {
                 <CtaGroup place={`pagina-${item.slug}`} whatsappMessage={item.whatsappMessage} className="mt-8" />
               </div>
               {photo ? (
-                <figure className="cut-frame overflow-hidden">
+                <figure className="border-l-[6px] border-copper">
                   <Photo asset={photo} sizes="(min-width: 1024px) 38rem, 100vw" priority className="aspect-[3/2] w-full object-cover" />
                 </figure>
               ) : (
-                <div className="cut-frame bg-navy-surface p-8 sm:p-12">
+                <div className="border-l-[6px] border-copper bg-teal-surface p-8 sm:p-12">
                   <EquipmentDiagram item={item} tone="dark" className="w-full" />
                 </div>
               )}
@@ -98,26 +98,26 @@ export default async function ServicePage({ params }: Props) {
         <section className="band-light section" aria-labelledby="que-movemos">
           <div className="shell grid gap-12 lg:grid-cols-[1fr_1.4fr]">
             <div>
-              <h2 id="que-movemos" className="display-2 rule-red">
+              <h2 id="que-movemos" className="display-2 rule-copper">
                 Qué movemos
               </h2>
               <ul className="mt-8 space-y-3">
                 {item.page.whatWeMove.map((x) => (
                   <li key={x} className="flex gap-2.5">
-                    <Icon name="check" className="mt-0.5 h-5 w-5 shrink-0 text-red" />
+                    <Icon name="check" className="mt-0.5 h-5 w-5 shrink-0 text-copper" />
                     {x}
                   </li>
                 ))}
               </ul>
-              <p className="mt-8 border-l-2 border-steel pl-4 text-sm text-steel-dark">{capacityDisclaimer}</p>
+              <p className="mt-8 border-l-2 border-gray pl-4 text-sm text-gray-dark">{capacityDisclaimer}</p>
             </div>
             <div>
-              <h2 className="display-2 rule-red">Cómo operamos</h2>
+              <h2 className="display-2 rule-copper">Cómo operamos</h2>
               <div className="spec-grid mt-8 sm:grid-cols-2">
                 {item.page.howWeOperate.map((b) => (
                   <div key={b.title} className="p-6">
                     <h3 className="text-base font-extrabold">{b.title}</h3>
-                    <p className="mt-2 text-sm text-steel-dark">{b.body}</p>
+                    <p className="mt-2 text-sm text-gray-dark">{b.body}</p>
                   </div>
                 ))}
               </div>
@@ -127,14 +127,14 @@ export default async function ServicePage({ params }: Props) {
 
         <section className="section" aria-labelledby="corredores">
           <div className="shell">
-            <h2 id="corredores" className="display-2 rule-red">
+            <h2 id="corredores" className="display-2 rule-copper">
               Corredores desde Guadalajara
             </h2>
             <ul className="mt-10 grid gap-8 lg:grid-cols-3">
               {corridors.map((c) => (
                 <li key={c.id} className="top-rule">
                   <h3 className="text-base font-extrabold text-white">{c.name}</h3>
-                  <p className="mt-0.5 text-xs font-semibold text-red-soft">{c.states}</p>
+                  <p className="mt-0.5 text-xs font-semibold text-copper-light">{c.states}</p>
                   <p className="mt-2 text-sm text-mist">{c.stops.map((s) => s.name).join(' · ')}</p>
                 </li>
               ))}
@@ -148,14 +148,14 @@ export default async function ServicePage({ params }: Props) {
 
         <section className="band-light section" aria-labelledby="preguntas-servicio">
           <div className="shell grid gap-10 lg:grid-cols-[1fr_1.6fr]">
-            <h2 id="preguntas-servicio" className="display-2 rule-red">
+            <h2 id="preguntas-servicio" className="display-2 rule-copper">
               Preguntas sobre {item.short.toLowerCase()}
             </h2>
             <dl className="border-t border-paper-line">
               {item.page.faqs.map((f) => (
                 <div key={f.q} className="border-b border-paper-line py-5">
                   <dt className="font-bold">{f.q}</dt>
-                  <dd className="mt-2 text-steel-dark">{f.a}</dd>
+                  <dd className="mt-2 text-gray-dark">{f.a}</dd>
                 </div>
               ))}
             </dl>
@@ -165,7 +165,7 @@ export default async function ServicePage({ params }: Props) {
         <section id="cta-final" className="section" aria-labelledby="otra-unidad">
           <div className="shell grid gap-10 lg:grid-cols-2 lg:items-end">
             <div>
-              <p className="overline">También ofrecemos</p>
+              <p className="eyebrow">También ofrecemos</p>
               <h2 id="otra-unidad" className="display-2 mt-3">
                 {other.name}
               </h2>

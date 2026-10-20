@@ -9,6 +9,7 @@
  * without touching components.
  *
  * NEVER UPSCALE: rendition widths are clamped to the cropped source width.
+ * `redact` boxes are blurred before cropping (see photos.config.mjs).
  *
  * Usage: npm run images
  */
@@ -33,10 +34,20 @@ for (const photo of photos) {
   if (![...SLOTS, 'gallery'].includes(photo.slot)) throw new Error(`${photo.slug}: unknown slot ${photo.slot}`);
   if (!photo.alt) throw new Error(`${photo.slug}: alt text is required`);
 
-  const src = sharp(path.join(SOURCE_DIR, photo.file)).rotate();
-  const meta = await src.metadata();
-  const portrait = (meta.orientation ?? 1) >= 5;
-  const [sw, sh] = portrait ? [meta.height, meta.width] : [meta.width, meta.height];
+  // Orientation applied once; every coordinate below is on the upright image.
+  let source = await sharp(path.join(SOURCE_DIR, photo.file)).rotate().toBuffer();
+  const { width: sw, height: sh } = await sharp(source).metadata();
+
+  // Redaction: blur small third-party identifiers (door lettering, badges,
+  // plates). Blur only — no pixel is painted or synthesised.
+  if (photo.redact?.length) {
+    const patches = [];
+    for (const z of photo.redact) {
+      const box = { left: Math.round(sw * z.left), top: Math.round(sh * z.top), width: Math.round(sw * z.width), height: Math.round(sh * z.height) };
+      patches.push({ input: await sharp(source).extract(box).blur(10).toBuffer(), left: box.left, top: box.top });
+    }
+    source = await sharp(source).composite(patches).toBuffer();
+  }
 
   // Fractional region first, then the largest box of the target ratio inside it.
   const r = photo.region ?? { left: 0, top: 0, width: 1, height: 1 };
@@ -54,7 +65,7 @@ for (const photo of photos) {
   const widths = [...new Set([...WIDTHS.filter((w) => w < cw), Math.min(cw, WIDTHS.at(-1))])];
   const renditions = [];
   for (const width of widths) {
-    const base = sharp(path.join(SOURCE_DIR, photo.file)).rotate().extract(crop).resize({ width });
+    const base = sharp(source).extract(crop).resize({ width });
     const name = `${photo.slug}-${width}`;
     await base.clone().avif({ quality: 52 }).toFile(path.join(OUT_DIR, `${name}.avif`));
     await base.clone().webp({ quality: 74 }).toFile(path.join(OUT_DIR, `${name}.webp`));

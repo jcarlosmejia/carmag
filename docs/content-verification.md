@@ -10,23 +10,11 @@ un dato sin confirmar no se publica, no se sustituye por una suposición y no se
 toma de la competencia. Los campos correspondientes en `src/data/company.ts`
 están en `null` y la interfaz oculta lo que no puede sostener.
 
-**Total de puntos pendientes: 14**
+**Total de puntos pendientes: 12**
 
-## Bloquea la publicación (3)
+## Bloquea la publicación (1)
 
 _El sitio no debe publicarse sin esto._
-
-### ¿Qué teléfono es el principal, cuál el secundario y cuál tiene WhatsApp, y está autorizado publicar cada uno en el sitio?
-
-- **Por qué no se publica:** Los números de la tarjeta de presentación no están confirmados para uso público. Además, son los mismos que publica el sitio de Romo's Transportes: hay que confirmar que deben aparecer también en CARMAG TRANSPORTS.
-- **Qué hace el sitio hoy:** No se muestra ningún teléfono ni botón de WhatsApp. Al confirmar, se activan en encabezado, menú móvil, contacto, pie de página, botón flotante y datos estructurados, siempre en el mismo orden.
-- **Identificador interno:** `contact-authorization`
-
-### ¿El buzón contacto.carmag@gmail.com es de la empresa, quién lo atiende y con qué frecuencia? ¿Cuándo estará contacto@carmag.com.mx?
-
-- **Por qué no se publica:** El correo es el destino del formulario de cotización. Publicar un buzón que nadie revisa pierde solicitudes.
-- **Qué hace el sitio hoy:** No se muestra correo y el formulario de cotización está oculto. El cambio a contacto@carmag.com.mx es un solo valor en src/data/company.ts.
-- **Identificador interno:** `email-mailbox`
 
 ### ¿Cuál es la razón social registrada y el domicilio del responsable del tratamiento de datos personales?
 
@@ -34,15 +22,9 @@ _El sitio no debe publicarse sin esto._
 - **Qué hace el sitio hoy:** No se genera la página de aviso de privacidad ni su enlace, y el formulario permanece oculto en producción.
 - **Identificador interno:** `legal-identity`
 
-## Limita el mensaje (5)
+## Limita el mensaje (4)
 
 _El sitio funciona, pero no puede afirmarlo hasta que se confirme._
-
-### La tarjeta usa el logotipo en verde petróleo (#123C3D) y cobre (#C8794B), pero la paleta indicada es azul marino (#071B2E), rojo (#D71920) y gris (#697580). ¿Cuál es la oficial?
-
-- **Por qué no se publica:** No se debe recolorear ni rediseñar el logotipo sin aprobación, y las dos referencias no coinciden.
-- **Qué hace el sitio hoy:** El sitio usa la paleta azul marino / rojo / gris. El logotipo conserva la geometría exacta de la tarjeta, en un solo color (blanco sobre fondo oscuro, azul marino sobre fondo claro). El texto del logotipo se trazó en Montserrat. Cambiar la paleta es editar los tokens en src/app/globals.css.
-- **Identificador interno:** `logo-palette`
 
 ### ¿Existe el archivo maestro del logotipo (SVG con texto convertido a trazos)?
 
@@ -50,10 +32,10 @@ _El sitio funciona, pero no puede afirmarlo hasta que se confirme._
 - **Qué hace el sitio hoy:** Se generan versiones trazadas del logotipo con Montserrat (npm run brand). Al recibir el maestro, se sustituyen en scripts/build-brand.mjs.
 - **Identificador interno:** `logo-master`
 
-### ¿Puede enviar de 8 a 15 fotografías reales de unidades CARMAG (Freightliner Cascadia, caja seca 53', plataforma 40', maniobras de carga)?
+### ¿Puede enviar fotografías originales en alta resolución, idealmente con unidades rotuladas CARMAG (Freightliner Cascadia, caja seca 53', plataforma 40', maniobras de carga)?
 
-- **Por qué no se publica:** Solo se publican fotos reales de la empresa. No se usan fotos de stock, imágenes generadas ni fotos de Romo's Transportes.
-- **Qué hace el sitio hoy:** Las secciones muestran fichas técnicas y diagramas de medidas en lugar de fotos; la galería no se muestra. Al agregar fotos en photos/ y correr npm run images, aparecen sin cambiar el diseño.
+- **Por qué no se publica:** Las fotos actuales son de la empresa (autorizadas el 2026-10-20), pero vienen de capturas de WhatsApp de unos 1,000 px y no muestran unidades rotuladas CARMAG. Fotos originales en alta resolución mejoran el hero en pantallas grandes.
+- **Qué hace el sitio hoy:** Se publican 7 fotos; toda marca, emblema, rótulo de identificación y placa de la identidad anterior está fuera de cuadro o difuminada (scripts/photos.config.mjs). Al agregar fotos en photos/ y correr npm run images, se sustituyen sin cambiar el diseño.
 - **Identificador interno:** `photos`
 
 ### ¿Qué configuración vehicular y número de ejes tiene cada unidad, y qué capacidad de carga autorizada conforme a la NOM-012-SCT-2?
@@ -68,9 +50,15 @@ _El sitio funciona, pero no puede afirmarlo hasta que se confirme._
 - **Qué hace el sitio hoy:** No existe sección de seguridad de la carga ni se menciona GPS, seguro o certificaciones. El seguimiento de embarques queda como integración futura, desactivada.
 - **Identificador interno:** `cargo-security`
 
-## Mejora opcional (6)
+## Mejora opcional (7)
 
 _No bloquea nada; mejora el resultado si se resuelve._
+
+### ¿Cuándo estará disponible contacto@carmag.com.mx?
+
+- **Por qué no se publica:** Un buzón con el dominio propio da más confianza a compradores B2B que una cuenta de Gmail.
+- **Qué hace el sitio hoy:** Se publica contacto.carmag@gmail.com (autorizado). El cambio es un solo valor en src/data/company.ts; los registros MX deben conservarse al migrar el DNS.
+- **Identificador interno:** `email-domain`
 
 ### ¿Hay cajas secas de 48 pies disponibles actualmente?
 

@@ -12,8 +12,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: company.valueProposition,
     start_url: '/',
     display: 'browser',
-    background_color: '#071b2e',
-    theme_color: '#071b2e',
+    background_color: '#123c3d',
+    theme_color: '#123c3d',
     lang: 'es-MX',
     icons: [
       { src: '/brand/icon-192.png', sizes: '192x192', type: 'image/png' },

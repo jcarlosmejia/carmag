@@ -24,10 +24,10 @@ export const metadata: Metadata = {
 };
 
 /**
- * @description Home. Band rhythm alternates dark and light:
- * hero + figures (dark) → equipo (light) → servicios (dark) → sectores (light)
- * → cobertura (dark) → galería (dark, photos only) → nosotros (light)
- * → cómo cotizar (dark) → contacto (light) → preguntas (dark) → CTA (light).
+ * @description Home. Bands alternate teal and light:
+ * hero + figures (teal) → equipo (paper) → servicios (teal) → sectores (paper)
+ * → cobertura (teal) → nosotros (white) → galería (teal) → cómo cotizar
+ * (paper) → cotiza tu transporte (teal) → preguntas (white) → CTA (copper).
  * Contact-dependent sections render only once a channel is published.
  */
 export default function HomePage() {
@@ -42,8 +42,8 @@ export default function HomePage() {
         <Services />
         <Sectors />
         <Coverage />
-        <Gallery />
         <Reasons />
+        <Gallery />
         <Process />
         <Contact />
         <Faq />

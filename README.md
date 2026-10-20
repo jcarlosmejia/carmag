@@ -2,7 +2,12 @@
 
 Sitio estático (Next.js `output: 'export'`) para CARMAG TRANSPORTS, transporte
 de carga y fletes desde Guadalajara. Se publica como Worker de activos
-estáticos en Cloudflare (`wrangler.jsonc`).
+estáticos en Cloudflare (`wrangler.jsonc`, que ejecuta `npm run build` antes de
+desplegar).
+
+Identidad visual: la tarjeta de presentación es la fuente (verde petróleo
+`#123C3D`, cobre `#C8794B`, grises `#6B7779` / `#B9C4C4`); tokens en
+`src/app/globals.css`, auditados con `npm run brand`.
 
 ## Regla de datos
 
@@ -11,9 +16,9 @@ en `null` o con `confirmed: false`, y la interfaz lo oculta: nunca se muestra
 un marcador, un número de ejemplo ni una suposición. Lo pendiente está en
 `docs/content-verification.md` (generado con `npm run docs`).
 
-Hoy ningún canal de contacto está confirmado, así que la compilación de
-producción no muestra teléfono, WhatsApp, correo, formulario ni aviso de
-privacidad. Para revisar el diseño completo con los datos candidatos:
+Teléfono, WhatsApp y correo están autorizados y publicados. El formulario y el
+aviso de privacidad siguen ocultos hasta confirmar razón social y domicilio.
+Para revisar el formulario sin publicarlo:
 
 ```bash
 NEXT_PUBLIC_CARMAG_REVIEW=1 npm run build
@@ -36,8 +41,10 @@ Esa versión lleva `noindex` y un aviso visible. No debe desplegarse.
 
 ## Fotografías
 
-Solo fotos reales de CARMAG. Se colocan en `photos/` (no se versiona), se
-describen en `scripts/photos.config.mjs` y se procesan con `npm run images`.
+Solo fotos propiedad de la empresa. Se colocan en `photos/` (no se versiona),
+se describen en `scripts/photos.config.mjs` —con recorte (`region`) y
+difuminado de emblemas, rótulos y placas (`redact`)— y se procesan con
+`npm run images`.
 Cada sección tiene un espacio (`hero`, `hero-mobile`, `caja-seca`,
 `plataforma`, `operacion`, `gallery`); sin foto, muestra su versión sin foto.
 

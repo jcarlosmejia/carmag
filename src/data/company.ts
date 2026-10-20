@@ -73,18 +73,19 @@ export const company = {
 } as const;
 
 /**
- * Contact candidates from the CARMAG business card. All unconfirmed for public
- * use (owner, 2026-10-19), so all hidden in production. Flip `confirmed` to
- * `true` per channel once the owner authorizes it; nothing else changes.
+ * Contact channels from the CARMAG business card. Owner authorized public use
+ * on 2026-10-20 with the Phase 0 roles: primary phone, secondary phone (also
+ * the WhatsApp line) and the card's Gmail mailbox. Set `confirmed` to `false`
+ * to withdraw a channel; every placement and the JSON-LD follow.
  */
 const contactCandidates = {
   /** `tel:` form and display form. */
-  phone: pending({ tel: '+523343995054', display: '+52 33 4399 5054' }, false),
-  phoneSecondary: pending({ tel: '+523310131863', display: '+52 33 1013 1863' }, false),
+  phone: pending({ tel: '+523343995054', display: '+52 33 4399 5054' }, true),
+  phoneSecondary: pending({ tel: '+523310131863', display: '+52 33 1013 1863' }, true),
   /** E.164 digits, no `+`. */
-  whatsapp: pending({ digits: '523310131863', display: '+52 33 1013 1863' }, false),
+  whatsapp: pending({ digits: '523310131863', display: '+52 33 1013 1863' }, true),
   /** Temporary until contacto@carmag.com.mx exists. */
-  email: pending('contacto.carmag@gmail.com', false),
+  email: pending('contacto.carmag@gmail.com', true),
 };
 
 export const contact = {
@@ -138,24 +139,12 @@ export function whatsappLink(message: string): string | null {
  */
 export const pendingVerification: readonly VerificationItem[] = [
   {
-    id: 'contact-authorization',
-    question:
-      '¿Qué teléfono es el principal, cuál el secundario y cuál tiene WhatsApp, y está autorizado publicar cada uno en el sitio?',
-    reason:
-      'Los números de la tarjeta de presentación no están confirmados para uso público. Además, son los mismos que publica el sitio de Romo\'s Transportes: hay que confirmar que deben aparecer también en CARMAG TRANSPORTS.',
+    id: 'email-domain',
+    question: '¿Cuándo estará disponible contacto@carmag.com.mx?',
+    reason: 'Un buzón con el dominio propio da más confianza a compradores B2B que una cuenta de Gmail.',
     currentBehaviour:
-      'No se muestra ningún teléfono ni botón de WhatsApp. Al confirmar, se activan en encabezado, menú móvil, contacto, pie de página, botón flotante y datos estructurados, siempre en el mismo orden.',
-    impact: 'blocks-launch',
-  },
-  {
-    id: 'email-mailbox',
-    question:
-      '¿El buzón contacto.carmag@gmail.com es de la empresa, quién lo atiende y con qué frecuencia? ¿Cuándo estará contacto@carmag.com.mx?',
-    reason:
-      'El correo es el destino del formulario de cotización. Publicar un buzón que nadie revisa pierde solicitudes.',
-    currentBehaviour:
-      'No se muestra correo y el formulario de cotización está oculto. El cambio a contacto@carmag.com.mx es un solo valor en src/data/company.ts.',
-    impact: 'blocks-launch',
+      'Se publica contacto.carmag@gmail.com (autorizado). El cambio es un solo valor en src/data/company.ts; los registros MX deben conservarse al migrar el DNS.',
+    impact: 'nice-to-have',
   },
   {
     id: 'legal-identity',
@@ -166,16 +155,6 @@ export const pendingVerification: readonly VerificationItem[] = [
     currentBehaviour:
       'No se genera la página de aviso de privacidad ni su enlace, y el formulario permanece oculto en producción.',
     impact: 'blocks-launch',
-  },
-  {
-    id: 'logo-palette',
-    question:
-      'La tarjeta usa el logotipo en verde petróleo (#123C3D) y cobre (#C8794B), pero la paleta indicada es azul marino (#071B2E), rojo (#D71920) y gris (#697580). ¿Cuál es la oficial?',
-    reason:
-      'No se debe recolorear ni rediseñar el logotipo sin aprobación, y las dos referencias no coinciden.',
-    currentBehaviour:
-      'El sitio usa la paleta azul marino / rojo / gris. El logotipo conserva la geometría exacta de la tarjeta, en un solo color (blanco sobre fondo oscuro, azul marino sobre fondo claro). El texto del logotipo se trazó en Montserrat. Cambiar la paleta es editar los tokens en src/app/globals.css.',
-    impact: 'limits-messaging',
   },
   {
     id: 'logo-master',
@@ -189,11 +168,11 @@ export const pendingVerification: readonly VerificationItem[] = [
   {
     id: 'photos',
     question:
-      '¿Puede enviar de 8 a 15 fotografías reales de unidades CARMAG (Freightliner Cascadia, caja seca 53\', plataforma 40\', maniobras de carga)?',
+      '¿Puede enviar fotografías originales en alta resolución, idealmente con unidades rotuladas CARMAG (Freightliner Cascadia, caja seca 53\', plataforma 40\', maniobras de carga)?',
     reason:
-      'Solo se publican fotos reales de la empresa. No se usan fotos de stock, imágenes generadas ni fotos de Romo\'s Transportes.',
+      'Las fotos actuales son de la empresa (autorizadas el 2026-10-20), pero vienen de capturas de WhatsApp de unos 1,000 px y no muestran unidades rotuladas CARMAG. Fotos originales en alta resolución mejoran el hero en pantallas grandes.',
     currentBehaviour:
-      'Las secciones muestran fichas técnicas y diagramas de medidas en lugar de fotos; la galería no se muestra. Al agregar fotos en photos/ y correr npm run images, aparecen sin cambiar el diseño.',
+      'Se publican 7 fotos; toda marca, emblema, rótulo de identificación y placa de la identidad anterior está fuera de cuadro o difuminada (scripts/photos.config.mjs). Al agregar fotos en photos/ y correr npm run images, se sustituyen sin cambiar el diseño.',
     impact: 'limits-messaging',
   },
   {

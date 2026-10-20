@@ -19,7 +19,7 @@ type Base = { place: string; className?: string; small?: boolean };
  */
 export function WhatsAppCta({
   place,
-  label = 'Solicitar tarifa por WhatsApp',
+  label = 'Hablar por WhatsApp',
   message = whatsappQuoteMessage,
   className = '',
   small = false,
@@ -47,7 +47,7 @@ export function WhatsAppCta({
  * @description Secondary CTA: mail client with the tariff template.
  * @param label Button text.
  */
-export function EmailCta({ place, label = 'Solicitar tarifa por correo', className = '', small = false }: Base & { label?: string }) {
+export function EmailCta({ place, label = 'Cotizar por correo', className = '', small = false }: Base & { label?: string }) {
   if (!contact.email) return null;
   return (
     <a
@@ -85,10 +85,17 @@ export function PhoneLink({ place, prefix, className = '' }: Base & { prefix?: s
 }
 
 /**
- * @description Jumps to the quote form (or the contact list without a form).
+ * @description Primary conversion CTA: jumps to "Cotiza tu transporte".
  * @param label Button text.
+ * @param variant `primary` (copper) or `dark` (teal, for copper bands).
  */
-export function QuoteButton({ place, label = 'Cotizar mi flete', className = '', small = false }: Base & { label?: string }) {
+export function QuoteButton({
+  place,
+  label = 'Solicitar cotización',
+  variant = 'primary',
+  className = '',
+  small = false,
+}: Base & { label?: string; variant?: 'primary' | 'dark' }) {
   if (!quoteHref) return null;
   return (
     <a
@@ -96,23 +103,24 @@ export function QuoteButton({ place, label = 'Cotizar mi flete', className = '',
       href={quoteHref}
       data-cta="cotizar"
       data-cta-place={place}
-      className={`btn btn-primary ${small ? 'btn-sm' : ''} ${className}`}
+      className={`btn btn-${variant} ${small ? 'btn-sm' : ''} ${className}`}
     >
+      <Icon name="quote" className="h-[1.125rem] w-[1.125rem]" />
       {label}
     </a>
   );
 }
 
 /**
- * @description WhatsApp, e-mail, then phone, stacked on phones.
+ * @description "Solicitar cotización", WhatsApp, then phone, stacked on phones.
  * @param whatsappMessage Equipment-specific WhatsApp template.
  */
 export function CtaGroup({ place, whatsappMessage, className = '' }: Base & { whatsappMessage?: string }) {
   if (!contact.whatsapp && !contact.email && !contact.phone) return null;
   return (
     <div className={`flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center ${className}`}>
+      <QuoteButton place={place} />
       <WhatsAppCta place={place} message={whatsappMessage} />
-      <EmailCta place={place} />
       <PhoneLink place={place} prefix="o llama al" className="justify-center text-[var(--fg-strong)] sm:justify-start" />
     </div>
   );

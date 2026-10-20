@@ -16,6 +16,195 @@ export type ImageAsset = {
   renditions: readonly ImageRendition[];
 };
 
-export const slotImages: Partial<Record<ImageSlot, ImageAsset>> = {};
+export const slotImages: Partial<Record<ImageSlot, ImageAsset>> = {
+  "hero": {
+    "slug": "carmag-tractocamion-plataforma-carga-atardecer",
+    "width": 894,
+    "height": 559,
+    "alt": "Tractocamión con plataforma cargada de material enfardado, listo para salir a carretera al atardecer.",
+    "renditions": [
+      {
+        "width": 480,
+        "avif": "/images/carmag-tractocamion-plataforma-carga-atardecer-480.avif",
+        "webp": "/images/carmag-tractocamion-plataforma-carga-atardecer-480.webp",
+        "jpg": "/images/carmag-tractocamion-plataforma-carga-atardecer-480.jpg"
+      },
+      {
+        "width": 768,
+        "avif": "/images/carmag-tractocamion-plataforma-carga-atardecer-768.avif",
+        "webp": "/images/carmag-tractocamion-plataforma-carga-atardecer-768.webp",
+        "jpg": "/images/carmag-tractocamion-plataforma-carga-atardecer-768.jpg"
+      },
+      {
+        "width": 894,
+        "avif": "/images/carmag-tractocamion-plataforma-carga-atardecer-894.avif",
+        "webp": "/images/carmag-tractocamion-plataforma-carga-atardecer-894.webp",
+        "jpg": "/images/carmag-tractocamion-plataforma-carga-atardecer-894.jpg"
+      }
+    ]
+  },
+  "hero-mobile": {
+    "slug": "carmag-tractocamion-plataforma-carga-atardecer-movil",
+    "width": 811,
+    "height": 608,
+    "alt": "Tractocamión con plataforma cargada de material enfardado, listo para salir a carretera al atardecer.",
+    "renditions": [
+      {
+        "width": 480,
+        "avif": "/images/carmag-tractocamion-plataforma-carga-atardecer-movil-480.avif",
+        "webp": "/images/carmag-tractocamion-plataforma-carga-atardecer-movil-480.webp",
+        "jpg": "/images/carmag-tractocamion-plataforma-carga-atardecer-movil-480.jpg"
+      },
+      {
+        "width": 768,
+        "avif": "/images/carmag-tractocamion-plataforma-carga-atardecer-movil-768.avif",
+        "webp": "/images/carmag-tractocamion-plataforma-carga-atardecer-movil-768.webp",
+        "jpg": "/images/carmag-tractocamion-plataforma-carga-atardecer-movil-768.jpg"
+      },
+      {
+        "width": 811,
+        "avif": "/images/carmag-tractocamion-plataforma-carga-atardecer-movil-811.avif",
+        "webp": "/images/carmag-tractocamion-plataforma-carga-atardecer-movil-811.webp",
+        "jpg": "/images/carmag-tractocamion-plataforma-carga-atardecer-movil-811.jpg"
+      }
+    ]
+  },
+  "caja-seca": {
+    "slug": "carmag-caja-seca-53-pies-tractocamion",
+    "width": 804,
+    "height": 536,
+    "alt": "Tractocamión conectado a una caja seca blanca de 53 pies, estacionado en un patio junto a la carretera.",
+    "renditions": [
+      {
+        "width": 480,
+        "avif": "/images/carmag-caja-seca-53-pies-tractocamion-480.avif",
+        "webp": "/images/carmag-caja-seca-53-pies-tractocamion-480.webp",
+        "jpg": "/images/carmag-caja-seca-53-pies-tractocamion-480.jpg"
+      },
+      {
+        "width": 768,
+        "avif": "/images/carmag-caja-seca-53-pies-tractocamion-768.avif",
+        "webp": "/images/carmag-caja-seca-53-pies-tractocamion-768.webp",
+        "jpg": "/images/carmag-caja-seca-53-pies-tractocamion-768.jpg"
+      },
+      {
+        "width": 804,
+        "avif": "/images/carmag-caja-seca-53-pies-tractocamion-804.avif",
+        "webp": "/images/carmag-caja-seca-53-pies-tractocamion-804.webp",
+        "jpg": "/images/carmag-caja-seca-53-pies-tractocamion-804.jpg"
+      }
+    ]
+  },
+  "plataforma": {
+    "slug": "carmag-plataforma-estructuras-acero",
+    "width": 897,
+    "height": 598,
+    "alt": "Plataforma cargada con estructuras de acero de gran formato, aseguradas con bandas y cadenas.",
+    "renditions": [
+      {
+        "width": 480,
+        "avif": "/images/carmag-plataforma-estructuras-acero-480.avif",
+        "webp": "/images/carmag-plataforma-estructuras-acero-480.webp",
+        "jpg": "/images/carmag-plataforma-estructuras-acero-480.jpg"
+      },
+      {
+        "width": 768,
+        "avif": "/images/carmag-plataforma-estructuras-acero-768.avif",
+        "webp": "/images/carmag-plataforma-estructuras-acero-768.webp",
+        "jpg": "/images/carmag-plataforma-estructuras-acero-768.jpg"
+      },
+      {
+        "width": 897,
+        "avif": "/images/carmag-plataforma-estructuras-acero-897.avif",
+        "webp": "/images/carmag-plataforma-estructuras-acero-897.webp",
+        "jpg": "/images/carmag-plataforma-estructuras-acero-897.jpg"
+      }
+    ]
+  },
+  "operacion": {
+    "slug": "carmag-plataformas-carretera",
+    "width": 729,
+    "height": 486,
+    "alt": "Dos tractocamiones con plataformas cargadas y cubiertas circulando por una carretera.",
+    "renditions": [
+      {
+        "width": 480,
+        "avif": "/images/carmag-plataformas-carretera-480.avif",
+        "webp": "/images/carmag-plataformas-carretera-480.webp",
+        "jpg": "/images/carmag-plataformas-carretera-480.jpg"
+      },
+      {
+        "width": 729,
+        "avif": "/images/carmag-plataformas-carretera-729.avif",
+        "webp": "/images/carmag-plataformas-carretera-729.webp",
+        "jpg": "/images/carmag-plataformas-carretera-729.jpg"
+      }
+    ]
+  }
+};
 
-export const galleryImages: readonly ImageAsset[] = [];
+export const galleryImages: readonly ImageAsset[] = [
+  {
+    "slug": "carmag-plataforma-carga-paletizada",
+    "width": 712,
+    "height": 475,
+    "alt": "Tractocamión con plataforma cargada de mercancía paletizada en el patio de una planta industrial.",
+    "caption": "Carga paletizada en plataforma",
+    "renditions": [
+      {
+        "width": 480,
+        "avif": "/images/carmag-plataforma-carga-paletizada-480.avif",
+        "webp": "/images/carmag-plataforma-carga-paletizada-480.webp",
+        "jpg": "/images/carmag-plataforma-carga-paletizada-480.jpg"
+      },
+      {
+        "width": 712,
+        "avif": "/images/carmag-plataforma-carga-paletizada-712.avif",
+        "webp": "/images/carmag-plataforma-carga-paletizada-712.webp",
+        "jpg": "/images/carmag-plataforma-carga-paletizada-712.jpg"
+      }
+    ]
+  },
+  {
+    "slug": "carmag-plataforma-material-reciclable",
+    "width": 785,
+    "height": 523,
+    "alt": "Plataforma con carga de material metálico reciclable contenida con redilas y lonas.",
+    "caption": "Material metálico contenido con redilas",
+    "renditions": [
+      {
+        "width": 480,
+        "avif": "/images/carmag-plataforma-material-reciclable-480.avif",
+        "webp": "/images/carmag-plataforma-material-reciclable-480.webp",
+        "jpg": "/images/carmag-plataforma-material-reciclable-480.jpg"
+      },
+      {
+        "width": 768,
+        "avif": "/images/carmag-plataforma-material-reciclable-768.avif",
+        "webp": "/images/carmag-plataforma-material-reciclable-768.webp",
+        "jpg": "/images/carmag-plataforma-material-reciclable-768.jpg"
+      },
+      {
+        "width": 785,
+        "avif": "/images/carmag-plataforma-material-reciclable-785.avif",
+        "webp": "/images/carmag-plataforma-material-reciclable-785.webp",
+        "jpg": "/images/carmag-plataforma-material-reciclable-785.jpg"
+      }
+    ]
+  },
+  {
+    "slug": "carmag-plataforma-varilla-nave-industrial",
+    "width": 464,
+    "height": 309,
+    "alt": "Plataforma cargada con varilla de acero dentro de una nave industrial.",
+    "caption": "Varilla de acero en nave industrial",
+    "renditions": [
+      {
+        "width": 464,
+        "avif": "/images/carmag-plataforma-varilla-nave-industrial-464.avif",
+        "webp": "/images/carmag-plataforma-varilla-nave-industrial-464.webp",
+        "jpg": "/images/carmag-plataforma-varilla-nave-industrial-464.jpg"
+      }
+    ]
+  }
+];

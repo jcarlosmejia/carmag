@@ -49,30 +49,30 @@ export function MexicoMap({ className = '' }: { className?: string }) {
       <title id="mapa-titulo">Corredores de servicio de CARMAG TRANSPORTS desde Guadalajara</title>
       <desc id="mapa-descripcion">{description}</desc>
 
-      <path d={MEXICO_OUTLINE} fill="#13324f" stroke="#9daab7" strokeWidth="2" strokeLinejoin="round" />
+      <path d={MEXICO_OUTLINE} fill="#1a4748" stroke="#b9c4c4" strokeWidth="2" strokeLinejoin="round" />
 
-      <g fill="none" stroke="#f0595e" strokeWidth="4" strokeDasharray="10 7" strokeLinecap="round" strokeLinejoin="round">
+      <g fill="none" stroke="#e3a781" strokeWidth="4" strokeDasharray="10 7" strokeLinecap="round" strokeLinejoin="round">
         {Object.values(corridorPaths).map((d) => (
           <path key={d} d={d} />
         ))}
       </g>
 
-      <g fill="#ffffff" stroke="#071b2e" strokeWidth="2.5">
+      <g fill="#ffffff" stroke="#123c3d" strokeWidth="2.5">
         {stops.map((id) => (
           <circle key={id} cx={mapPoints[id].x} cy={mapPoints[id].y} r="6" />
         ))}
       </g>
 
-      <circle cx={hub.x} cy={hub.y} r="21" fill="none" stroke="#d71920" strokeWidth="3" opacity="0.55" />
-      <circle cx={hub.x} cy={hub.y} r="11" fill="#d71920" stroke="#ffffff" strokeWidth="3" />
+      <circle cx={hub.x} cy={hub.y} r="21" fill="none" stroke="#c8794b" strokeWidth="3" opacity="0.7" />
+      <circle cx={hub.x} cy={hub.y} r="11" fill="#c8794b" stroke="#ffffff" strokeWidth="3" />
 
       <g
         className="hidden sm:inline"
         fontFamily="var(--font-montserrat), Arial, sans-serif"
         fontWeight="600"
         fontSize="18"
-        fill="#e4e9ee"
-        stroke="#071b2e"
+        fill="#e6eded"
+        stroke="#123c3d"
         strokeWidth="5"
         strokeLinejoin="round"
         paintOrder="stroke"

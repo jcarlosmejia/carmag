@@ -14,7 +14,7 @@ export function WhatsAppFloat({ message }: { message: string }) {
   const href = whatsappLink(message);
 
   useEffect(() => {
-    const targets = ['contacto', 'cta-final'].map((id) => document.getElementById(id)).filter((el): el is HTMLElement => el !== null);
+    const targets = ['cotizar', 'cta-final'].map((id) => document.getElementById(id)).filter((el): el is HTMLElement => el !== null);
     if (!targets.length || typeof IntersectionObserver === 'undefined') return;
     const visible = new Set<Element>();
     const observer = new IntersectionObserver((entries) => {

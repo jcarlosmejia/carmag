@@ -24,10 +24,10 @@ export default function PrivacyPage() {
     <>
       <Header />
       <main id="contenido" className="band-light section">
-        <article className="shell max-w-3xl space-y-6 text-steel-dark [&_h2]:mt-10 [&_h2]:text-xl [&_h2]:text-navy">
-          <h1 className="display-2 text-navy">Aviso de privacidad</h1>
+        <article className="shell max-w-3xl space-y-6 text-gray-dark [&_h2]:mt-10 [&_h2]:text-xl [&_h2]:text-teal">
+          <h1 className="display-2 text-teal">Aviso de privacidad</h1>
           <p>
-            <strong className="text-navy">{legalName}</strong>, que opera la marca {company.name}, con domicilio en {address}, es responsable del
+            <strong className="text-teal">{legalName}</strong>, que opera la marca {company.name}, con domicilio en {address}, es responsable del
             tratamiento de los datos personales que nos proporcionas, conforme a la Ley Federal de Protección de Datos Personales en Posesión de los
             Particulares.
           </p>

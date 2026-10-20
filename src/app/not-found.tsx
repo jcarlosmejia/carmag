@@ -15,7 +15,7 @@ export default function NotFound() {
       <Header />
       <main id="contenido" className="section">
         <div className="shell max-w-2xl">
-          <p className="overline">Error 404</p>
+          <p className="eyebrow">Error 404</p>
           <h1 className="display-2 mt-3">Esta página no existe</h1>
           <p className="mt-4 text-mist">Puede que el enlace haya cambiado. Desde el inicio encuentras el equipo, la cobertura y cómo cotizar tu flete.</p>
           <Link id="volver-inicio" href="/" className="btn btn-primary mt-8">

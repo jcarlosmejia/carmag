@@ -1,4 +1,4 @@
-import { contact, quoteFormEnabled } from './company';
+import { contact } from './company';
 
 /** True when at least one contact channel is published. */
 export const hasContactSection = Boolean(contact.phone || contact.whatsapp || contact.email);
@@ -13,8 +13,11 @@ export const navItems = [
   { href: '/#equipo', label: 'Equipo' },
   { href: '/#cobertura', label: 'Cobertura' },
   { href: '/#nosotros', label: 'Nosotros' },
-  ...(hasContactSection ? [{ href: '/#contacto', label: 'Contacto' }] : []),
+  ...(hasContactSection ? [{ href: '/#cotizar', label: 'Contacto' }] : []),
 ] as const;
 
-/** Target of every "Cotizar" button: the form when it exists, else the contact list. */
-export const quoteHref = quoteFormEnabled ? '/#cotizar' : hasContactSection ? '/#contacto' : null;
+/**
+ * Target of every "Solicitar cotización" button: the "Cotiza tu transporte"
+ * section, which holds the channels and, once enabled, the form.
+ */
+export const quoteHref = hasContactSection ? '/#cotizar' : null;

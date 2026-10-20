@@ -46,7 +46,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#071b2e',
+  themeColor: '#123c3d',
   colorScheme: 'dark',
   width: 'device-width',
   initialScale: 1,
@@ -64,7 +64,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Saltar al contenido
         </a>
         {isReviewBuild ? (
-          <p role="note" className="bg-[#f5b841] px-4 py-2 text-center text-sm font-bold text-navy">
+          <p role="note" className="bg-copper px-4 py-2 text-center text-sm font-bold text-teal-ink">
             Vista de revisión: incluye datos de contacto sin confirmar. No publicar.
           </p>
         ) : null}

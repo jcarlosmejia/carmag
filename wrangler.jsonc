@@ -6,6 +6,12 @@
   "name": "carmag",
   "compatibility_date": "2026-10-19",
 
+  // Workers Builds runs only `npm clean-install` + `npx wrangler deploy` when
+  // no build command is set in the dashboard, so `out/` never existed and the
+  // deploy failed ("assets.directory ... does not exist"). Wrangler runs this
+  // before deploying. Leave the dashboard build command empty, or it builds twice.
+  "build": { "command": "npm run build" },
+
   "assets": {
     // `next build` (output: 'export') writes here.
     "directory": "./out/",

@@ -5,15 +5,13 @@ sigue en NEUBOX y no debe interrumpirse.
 
 ## 0. Antes de publicar (bloqueos)
 
-El sitio en producción oculta todo canal de contacto hasta que se confirme. Sin
-estos puntos, el sitio publicado no tiene forma de pedir cotización:
+Teléfonos, WhatsApp y correo quedaron autorizados el 2026-10-20 y ya se
+publican. Falta:
 
-1. Confirmar teléfono principal, secundario y número de WhatsApp para uso
-   público (`contact-authorization` en `docs/content-verification.md`).
-2. Confirmar el buzón de correo y quién lo atiende (`email-mailbox`).
-3. Confirmar razón social y domicilio del responsable de datos personales
+1. Confirmar razón social y domicilio del responsable de datos personales
    (`legal-identity`). Sin esto no se publica el aviso de privacidad ni el
-   formulario.
+   formulario; mientras tanto la sección "Cotiza tu transporte" funciona con
+   WhatsApp, teléfono y correo.
 
 Cada confirmación es un cambio en `src/data/company.ts` (indicador `confirmed`
 o el valor que hoy está en `null`), seguido de `npm run docs`.
@@ -54,8 +52,9 @@ DKIM (`*._domainkey`), `_dmarc`, `mail`, `webmail`, `autodiscover` y cualquier
 ## 4. Publicar el sitio
 
 1. En Cloudflare: Workers & Pages → Create → Workers → importar el repositorio.
-   Build command `npm run build`, deploy command `npx wrangler deploy`.
-   Workers Builds despliega en cada push a `main`.
+   Deploy command `npx wrangler deploy`; **build command vacío**: `wrangler.jsonc`
+   ya ejecuta `npm run build` antes de desplegar (`build.command`). Workers
+   Builds despliega en cada push a `main`.
 2. Comprobar el sitio en la URL `*.workers.dev`.
 3. Adjuntar el dominio **desde el panel**: Worker → Settings → Domains & Routes
    → Add → Custom domain → `carmag.com.mx`. Si Cloudflare pide reemplazar el

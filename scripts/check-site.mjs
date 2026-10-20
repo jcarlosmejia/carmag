@@ -6,8 +6,8 @@
  * description; its own canonical (indexable pages) and no accidental noindex;
  * JSON-LD that parses; every local href/src resolves to a built file and every
  * hash to an element id; sitemap URLs exist; 404 is noindex. Also guards the
- * facts contract: no reference-project leftovers, and in production builds no
- * unconfirmed contact value reaches the HTML.
+ * brand contract: no previous-brand word in any page, image filename or alt
+ * text.
  *
  * Usage: npm run check (after npm run build)
  */
@@ -18,9 +18,9 @@ const OUT = path.resolve(import.meta.dirname, '..', 'out');
 const SITE = 'https://carmag.com.mx';
 const review = process.env.NEXT_PUBLIC_CARMAG_REVIEW === '1';
 
-/** Unconfirmed candidates (src/data/company.ts) that must not ship in production. */
-const UNCONFIRMED = ['4399', '1013', '13 18 63', 'carmag@gmail', 'wa.me/'];
-const FORBIDDEN = ["Romo's", 'romostransportes', 'Lorem', 'undefined', 'NaN'];
+const FORBIDDEN = ['Lorem', 'undefined', 'NaN'];
+/** Previous brand. `\b` keeps Spanish words such as "promover" out of it. */
+const LEGACY_BRAND = /\bromo/i;
 
 const errors = [];
 const fail = (page, msg) => errors.push(`${page}: ${msg}`);
@@ -84,7 +84,7 @@ for (const { route, html } of pages) {
   // Visible text plus attribute values, without the RSC payload scripts.
   const markup = html.replace(/<script[\s\S]*?<\/script>/g, '');
   for (const word of FORBIDDEN) if (markup.includes(word)) fail(route, `contains "${word}"`);
-  if (!review) for (const value of UNCONFIRMED) if (html.includes(value)) fail(route, `unconfirmed contact value "${value}" shipped`);
+  if (LEGACY_BRAND.test(html)) fail(route, `contains previous brand: "${html.match(/.{0,30}\bromo.{0,30}/i)?.[0]}"`);
 
   for (const [, raw] of markup.matchAll(/\s(?:href|src)="([^"]+)"/g)) {
     const url = raw.replace(/&amp;/g, '&');
@@ -104,6 +104,8 @@ for (const { route, html } of pages) {
     }
   }
 }
+
+for (const file of readdirSync(path.join(OUT, 'images'))) if (LEGACY_BRAND.test(file)) fail('images', `filename ${file}`);
 
 const sitemap = readFileSync(path.join(OUT, 'sitemap.xml'), 'utf8');
 for (const [, loc] of sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)) {

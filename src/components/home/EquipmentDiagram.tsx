@@ -5,21 +5,21 @@ import type { Equipment } from '@/data/equipment';
  * style of the truck on the CARMAG business card. Shown where no real photo of
  * the unit exists yet; it describes the equipment type, not a specific unit.
  * @param item Equipment entry.
- * @param tone `dark` for navy bands, `light` for paper bands.
+ * @param tone `dark` for teal bands, `light` for paper bands.
  */
 export function EquipmentDiagram({ item, tone = 'light', className = '' }: { item: Equipment; tone?: 'dark' | 'light'; className?: string }) {
-  const ink = tone === 'dark' ? '#ffffff' : '#071b2e';
-  const bg = tone === 'dark' ? '#071b2e' : '#f4f2ee';
+  const ink = tone === 'dark' ? '#ffffff' : '#123c3d';
+  const bg = tone === 'dark' ? '#1a4748' : '#f3f6f6';
   const van = item.slug === 'caja-seca-53-pies';
   return (
     <svg viewBox="0 0 340 150" className={className} role="img" aria-label={`Diagrama de ${item.name}: ${item.length.ft} pies, ${item.length.m} metros de largo`}>
       <g transform="translate(-490 -330)">
         {van ? (
-          <rect x="500" y="346" width="230" height="74" rx="3" fill="#d71920" />
+          <rect x="500" y="346" width="230" height="74" rx="3" fill="#c8794b" />
         ) : (
           <>
-            <rect x="500" y="404" width="230" height="14" rx="2" fill="#d71920" />
-            <rect x="722" y="372" width="8" height="34" fill="#d71920" />
+            <rect x="500" y="404" width="230" height="14" rx="2" fill="#c8794b" />
+            <rect x="722" y="372" width="8" height="34" fill="#c8794b" />
           </>
         )}
         <rect x="514" y="420" width="64" height="9" fill={ink} />

@@ -8,9 +8,8 @@
  *    traced to paths in Montserrat (the site typeface, owner decision
  *    2026-10-19) using the card's own sizes, positions and `textLength`, so the
  *    lockup keeps the card's proportions without depending on an installed
- *    font. Colour is single-ink (`currentColor`) pending the palette decision —
- *    see `logo-palette` in src/data/company.ts. Replace with the master SVG
- *    once the owner supplies it.
+ *    font. Colours are the card's: front (light background) and back (dark
+ *    background). Replace with the master SVG once the owner supplies it.
  * 2. Icons and the OpenGraph image, rendered with sharp.
  * 3. Contrast audit of every colour pairing the UI uses. Exits non-zero on any
  *    pairing below its WCAG threshold.
@@ -29,9 +28,15 @@ const require = createRequire(import.meta.url);
 const ROOT = path.resolve(import.meta.dirname, '..');
 const BRAND = path.join(ROOT, 'public', 'brand');
 
-const NAVY = '#071B2E';
-const RED = '#D71920';
-const GRAY_LIGHT = '#9DAAB7';
+const TEAL = '#123C3D';
+const COPPER = '#C8794B';
+const GRAY_LIGHT = '#B9C4C4';
+
+/** Card inks: `dark` = back of the card, `light` = front. */
+const INKS = {
+  dark: { markA: '#FFFFFF', markB: COPPER, word: '#FFFFFF', descriptor: GRAY_LIGHT },
+  light: { markA: TEAL, markB: COPPER, word: TEAL, descriptor: '#6B7779' },
+};
 
 /* --------------------------------------------------------------------------
    Contrast audit
@@ -52,42 +57,44 @@ const contrast = (a, b) => {
 
 /** [label, foreground, background, minimum]. Mirrors src/app/globals.css. */
 const PAIRS = [
-  // Dark bands
-  ['white on navy', '#FFFFFF', '#071B2E', 4.5],
-  ['body on navy', '#E4E9EE', '#071B2E', 4.5],
-  ['muted on navy', '#9DAAB7', '#071B2E', 4.5],
-  ['muted on navy surface', '#9DAAB7', '#0D2742', 4.5],
-  ['red-soft accent text on navy', '#F0595E', '#071B2E', 4.5],
-  ['red-soft accent text on navy surface', '#F0595E', '#0D2742', 4.5],
-  
-  ['white focus ring on navy', '#FFFFFF', '#071B2E', 3],
-  ['red rule/graphic on navy', '#D71920', '#071B2E', 3],
-  // Light bands
-  ['navy on light band', '#071B2E', '#F4F2EE', 4.5],
-  ['muted-dark on light band', '#4F5B66', '#F4F2EE', 4.5],
-  ['muted-dark on white', '#4F5B66', '#FFFFFF', 4.5],
-  ['red accent text on light band', '#D71920', '#F4F2EE', 4.5],
-  ['red accent text on white', '#D71920', '#FFFFFF', 4.5],
-  ['red focus ring on light band', '#D71920', '#F4F2EE', 3],
-  ['brand gray graphic on light band', '#697580', '#F4F2EE', 3],
-  ['field border on white', '#697580', '#FFFFFF', 3],
-  ['placeholder on white', '#697580', '#FFFFFF', 4.5],
-  ['field text on white', '#071B2E', '#FFFFFF', 4.5],
-  ['error text on white', '#D71920', '#FFFFFF', 4.5],
+  // Dark teal bands
+  ['white on teal', '#FFFFFF', '#123C3D', 4.5],
+  ['mist body on teal', '#E6EDED', '#123C3D', 4.5],
+  ['gray-light muted on teal', '#B9C4C4', '#123C3D', 4.5],
+  ['gray-light muted on teal surface', '#B9C4C4', '#1A4748', 4.5],
+  ['copper-light accent text on teal', '#E3A781', '#123C3D', 4.5],
+  ['copper-light accent text on teal surface', '#E3A781', '#1A4748', 4.5],
+  ['white focus ring on teal', '#FFFFFF', '#123C3D', 3],
+  ['copper graphic on teal', '#C8794B', '#123C3D', 3],
+  // Light bands (white and paper)
+  ['teal on white', '#123C3D', '#FFFFFF', 4.5],
+  ['teal on paper', '#123C3D', '#F3F6F6', 4.5],
+  ['gray-dark muted on white', '#5B6769', '#FFFFFF', 4.5],
+  ['gray-dark muted on paper', '#5B6769', '#F3F6F6', 4.5],
+  ['card gray descriptor on white', '#6B7779', '#FFFFFF', 4.5],
+  ['copper-deep accent text on white', '#9C5830', '#FFFFFF', 4.5],
+  ['copper-deep accent text on paper', '#9C5830', '#F3F6F6', 4.5],
+  ['copper icon on white', '#C8794B', '#FFFFFF', 3],
+  ['copper icon on paper', '#C8794B', '#F3F6F6', 3],
+  ['teal focus ring on white', '#123C3D', '#FFFFFF', 3],
+  ['field border on white', '#6B7779', '#FFFFFF', 3],
+  ['placeholder on white', '#6B7779', '#FFFFFF', 4.5],
+  ['error text on white', '#B42318', '#FFFFFF', 4.5],
+  ['error text on paper', '#B42318', '#F3F6F6', 4.5],
   // Map
-  ['map label on navy halo', '#E4E9EE', '#071B2E', 4.5],
-  ['map outline on navy', '#9DAAB7', '#071B2E', 3],
-  ['map route (red-soft) on raised navy', '#F0595E', '#13324F', 3],
-  // Buttons
-  ['white on red (primary)', '#FFFFFF', '#D71920', 4.5],
-  ['white on red hover', '#FFFFFF', '#B5141A', 4.5],
+  ['map label on teal halo', '#E6EDED', '#123C3D', 4.5],
+  ['map outline on teal', '#B9C4C4', '#123C3D', 3],
+  ['map route (copper-light) on landmass', '#E3A781', '#1A4748', 3],
+  // Buttons and bands
+  ['teal-ink on copper (primary button)', '#0B2526', '#C8794B', 4.5],
+  ['teal-ink on copper hover', '#0B2526', '#D68D61', 4.5],
+  ['white on teal (dark button)', '#FFFFFF', '#123C3D', 4.5],
+  ['teal-ink on copper band', '#0B2526', '#C8794B', 4.5],
   ['whatsapp button label', '#FFFFFF', '#178644', 4.5],
   ['whatsapp button label hover', '#FFFFFF', '#11683A', 4.5],
   ['whatsapp float glyph', '#FFFFFF', '#1FA855', 3],
-  ['whatsapp float ring on light band', '#071B2E', '#F4F2EE', 3],
-  ['whatsapp float fill on navy', '#1FA855', '#071B2E', 3],
-  // Review banner
-  ['navy on amber banner', '#071B2E', '#F5B841', 4.5],
+  ['whatsapp float ring on white', '#123C3D', '#FFFFFF', 3],
+  ['whatsapp float fill on teal', '#1FA855', '#123C3D', 3],
 ];
 
 function audit() {
@@ -141,14 +148,14 @@ const descriptor = tracedText(font(700), 'TRANSPORTS', 304, 158, 22, 358);
 const VIEWBOX = '44 44 626 122';
 
 /**
- * @param fill Ink colour for the whole lockup.
+ * @param ink Card inks (`INKS.dark` or `INKS.light`).
  * @param withText Include the wordmark (false = mark only).
  */
-function logoSvg(fill, { withText = true, background = null, viewBox = VIEWBOX } = {}) {
+function logoSvg(ink, { withText = true, background = null, viewBox = VIEWBOX } = {}) {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}">${
     background ? `<rect x="-2000" y="-2000" width="5000" height="5000" fill="${background}"/>` : ''
-  }<g fill="${fill}" stroke="${fill}" stroke-width="12" stroke-linejoin="round" transform="${MARK_TRANSFORM}"><polygon points="${MARK_A}"/><polygon points="${MARK_B}"/></g>${
-    withText ? `<path fill="${fill}" d="${wordmark}"/><path fill="${fill}" d="${descriptor}"/>` : ''
+  }<g stroke-width="12" stroke-linejoin="round" transform="${MARK_TRANSFORM}"><polygon points="${MARK_A}" fill="${ink.markA}" stroke="${ink.markA}"/><polygon points="${MARK_B}" fill="${ink.markB}" stroke="${ink.markB}"/></g>${
+    withText ? `<path fill="${ink.word}" d="${wordmark}"/><path fill="${ink.descriptor}" d="${descriptor}"/>` : ''
   }</svg>`;
 }
 
@@ -160,7 +167,7 @@ function iconSvg(size) {
   const x = MARK_BOX.x - pad;
   const y = MARK_BOX.y + MARK_BOX.h / 2 - side / 2;
   return Buffer.from(
-    logoSvg('#FFFFFF', { withText: false, background: NAVY, viewBox: `${x} ${y} ${side} ${side}` }).replace(
+    logoSvg(INKS.dark, { withText: false, background: TEAL, viewBox: `${x} ${y} ${side} ${side}` }).replace(
       '<svg ',
       `<svg width="${size}" height="${size}" `,
     ),
@@ -186,9 +193,9 @@ export const DESCRIPTOR_PATH = '${descriptor}';
 `,
   );
 
-  await writeFile(path.join(BRAND, 'carmag-transports-logo-blanco.svg'), logoSvg('#FFFFFF'));
-  await writeFile(path.join(BRAND, 'carmag-transports-logo-azul.svg'), logoSvg(NAVY));
-  await sharp(Buffer.from(logoSvg(NAVY).replace('<svg ', '<svg width="512" ')))
+  await writeFile(path.join(BRAND, 'carmag-transports-logo-fondo-oscuro.svg'), logoSvg(INKS.dark));
+  await writeFile(path.join(BRAND, 'carmag-transports-logo-fondo-claro.svg'), logoSvg(INKS.light));
+  await sharp(Buffer.from(logoSvg(INKS.light).replace('<svg ', '<svg width="512" ')))
     .png()
     .toFile(path.join(BRAND, 'carmag-transports-logo-512.png'));
 
@@ -206,10 +213,10 @@ export const DESCRIPTOR_PATH = '${descriptor}';
   const tagline = tracedText(font(600), 'Transporte de carga y fletes desde Guadalajara', 96, 446, 40);
   const equipmentLine = tracedText(font(600), "Caja seca 53'  ·  Plataforma 40'  ·  Pacífico, Norte y Bajío", 96, 506, 28);
   const og = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
-<rect width="1200" height="630" fill="${NAVY}"/>
-<rect x="0" y="606" width="1200" height="24" fill="${RED}"/>
-<svg x="84" y="120" width="820" height="${(820 * 122) / 626}" viewBox="${VIEWBOX}">${logoSvg('#FFFFFF').replace(/^<svg[^>]*>|<\/svg>$/g, '')}</svg>
-<rect x="96" y="372" width="72" height="5" fill="${RED}"/>
+<rect width="1200" height="630" fill="${TEAL}"/>
+<rect x="40" y="0" width="6" height="630" fill="${COPPER}"/>
+<svg x="84" y="120" width="820" height="${(820 * 122) / 626}" viewBox="${VIEWBOX}">${logoSvg(INKS.dark).replace(/^<svg[^>]*>|<\/svg>$/g, '')}</svg>
+<rect x="96" y="372" width="72" height="5" fill="${COPPER}"/>
 <path fill="#FFFFFF" d="${tagline}"/>
 <path fill="${GRAY_LIGHT}" d="${equipmentLine}"/>
 </svg>`;

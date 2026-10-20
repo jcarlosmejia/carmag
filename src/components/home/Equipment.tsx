@@ -14,7 +14,7 @@ import { SectionHeading } from './Sections';
  */
 export function Equipment() {
   return (
-    <section id="equipo" className="band-light section" aria-labelledby="equipo-titulo">
+    <section id="equipo" className="band-light band-paper section" aria-labelledby="equipo-titulo">
       <div className="shell">
         <SectionHeading id="equipo-titulo" overline="Equipo" title="Equipo para cada tipo de carga" />
 
@@ -31,24 +31,24 @@ export function Equipment() {
                   </div>
                 )}
                 <div className="flex flex-1 flex-col p-6 sm:p-8">
-                  <p className="overline">{item.kicker}</p>
+                  <p className="eyebrow">{item.kicker}</p>
                   <h3 className="display-3 mt-2">{item.name}</h3>
-                  <p className="mt-3 text-steel-dark">{item.summary}</p>
+                  <p className="mt-3 text-gray-dark">{item.summary}</p>
 
                   <h4 className="label-tech mt-6">Ideal para</h4>
                   <ul className="mt-2 space-y-1.5">
                     {item.idealFor.map((use) => (
                       <li key={use} className="flex gap-2.5 text-[0.9375rem]">
-                        <Icon name="check" className="mt-0.5 h-5 w-5 shrink-0 text-red" />
+                        <Icon name="check" className="mt-0.5 h-5 w-5 shrink-0 text-copper" />
                         {use}
                       </li>
                     ))}
                   </ul>
 
                   <h4 className="label-tech mt-6">Manejo</h4>
-                  <ul className="mt-2 space-y-1.5 text-[0.9375rem] text-steel-dark">
+                  <ul className="mt-2 space-y-1.5 text-[0.9375rem] text-gray-dark">
                     {item.handling.map((note) => (
-                      <li key={note} className="border-l-2 border-red pl-3">
+                      <li key={note} className="border-l-2 border-copper pl-3">
                         {note}
                       </li>
                     ))}
@@ -67,7 +67,7 @@ export function Equipment() {
           })}
         </div>
 
-        <p className="mt-6 border-l-2 border-steel pl-4 text-sm text-steel-dark">{capacityDisclaimer}</p>
+        <p className="mt-6 border-l-2 border-gray pl-4 text-sm text-gray-dark">{capacityDisclaimer}</p>
       </div>
     </section>
   );
